@@ -725,7 +725,7 @@
                 <h3>Get a Free AI Cost Index Report</h3>
                 <p>Benchmark your AI environment against cost and efficiency metrics.</p>
               </div>
-              <a class="cta cta--ghost" href="#hero" data-scroll data-focus-form>
+              <a class="cta cta--ghost" href="#report-modal" data-open-report-modal>
                 Get the Report
                 <span class="cta__icon" aria-hidden="true">
                   <img
@@ -980,6 +980,104 @@
         </div>
       </div>
     </section>
+
+    <div class="report-modal" id="report-modal" hidden aria-hidden="true">
+      <div class="report-modal__backdrop" data-report-close tabindex="-1"></div>
+      <div
+        class="report-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="report-modal-title"
+      >
+        <button class="report-modal__close" type="button" data-report-close aria-label="Close">
+          <img
+            class="report-modal__close-icon"
+            src="assets/icons/close-blue.svg"
+            alt=""
+            width="24"
+            height="24"
+          />
+        </button>
+
+        <div class="report-modal__header">
+          <span class="report-modal__decor report-modal__decor--left" aria-hidden="true"></span>
+          <span class="report-modal__decor report-modal__decor--right" aria-hidden="true"></span>
+          <div class="report-modal__header-content">
+            <p class="report-modal__eyebrow">Benchmark your AI Environment</p>
+            <h2 class="report-modal__title" id="report-modal-title">
+              Get a Free AI Cost Index Report
+            </h2>
+          </div>
+        </div>
+
+        <div class="report-modal__body">
+          <form class="report-modal__form" data-report-form novalidate>
+            <div class="report-modal__fields">
+              <label class="report-field">
+                <span class="report-field__label">
+                  Business Email <span class="report-field__req" aria-hidden="true">*</span>
+                </span>
+                <input
+                  class="report-field__input"
+                  type="email"
+                  name="email"
+                  autocomplete="email"
+                  placeholder="Enter Business Email"
+                  required
+                />
+                <span class="report-field__error" data-report-email-error hidden>
+                  Enter a valid business email.
+                </span>
+              </label>
+
+              <div class="report-field report-field--upload" data-report-upload>
+                <span class="report-field__label" id="report-upload-label">
+                  Upload your AI Bill <span class="report-field__req" aria-hidden="true">*</span>
+                </span>
+                <div class="report-upload">
+                  <input
+                    class="report-upload__input"
+                    type="file"
+                    name="ai_bill"
+                    accept="application/pdf,.pdf"
+                    aria-labelledby="report-upload-label"
+                    required
+                  />
+                  <span class="report-upload__name" data-report-filename>PDF (max 10MB)</span>
+                  <button class="report-upload__browse" type="button" data-report-browse>
+                    Browse files
+                  </button>
+                  <button
+                    class="report-upload__clear"
+                    type="button"
+                    data-report-clear
+                    aria-label="Remove selected file"
+                    hidden
+                  >
+                    <span aria-hidden="true"></span>
+                  </button>
+                </div>
+                <span class="report-field__error" data-report-file-error hidden>
+                  Upload a PDF up to 10MB.
+                </span>
+              </div>
+            </div>
+
+            <button class="report-modal__submit" type="submit">Submit</button>
+          </form>
+
+          <p class="report-modal__legal">
+            By submitting this form, you acknowledge that you have read and agree to
+            <a
+              href="https://www.cloudkeeper.com/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              >CloudKeeper Privacy Policy</a
+            >.
+          </p>
+        </div>
+      </div>
+    </div>
 
     <footer class="footer">
       <div class="footer__inner">

@@ -615,4 +615,219 @@
   }
 
   initJourneySteps();
+
+  /* Report modal — upload-boll-popup-form */
+  var reportModal = document.getElementById("report-modal");
+  var reportModalOpen = false;
+  var reportLastFocus = null;
+  var REPORT_MAX_BYTES = 10 * 1024 * 1024;
+
+  function openReportModal() {
+    if (!reportModal || reportModalOpen) {
+      return;
+    }
+
+    reportLastFocus = document.activeElement;
+    reportModalOpen = true;
+    reportModal.hidden = false;
+    reportModal.classList.add("is-open");
+    reportModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("report-modal-open");
+
+    var closeBtn = reportModal.querySelector(".report-modal__close");
+    if (closeBtn) {
+      closeBtn.focus();
+    }
+  }
+
+  function closeReportModal() {
+    if (!reportModal || !reportModalOpen) {
+      return;
+    }
+
+    reportModalOpen = false;
+    reportModal.classList.remove("is-open");
+    reportModal.hidden = true;
+    reportModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("report-modal-open");
+
+    if (reportLastFocus && typeof reportLastFocus.focus === "function") {
+      reportLastFocus.focus();
+    }
+  }
+
+  function truncateFileName(name, max) {
+    var limit = max || 24;
+    if (!name || name.length <= limit) {
+      return name;
+    }
+    return name.slice(0, Math.max(0, limit - 2)) + "..";
+  }
+
+  function setUploadState(wrap, file) {
+    var upload = wrap.querySelector(".report-upload");
+    var nameEl = wrap.querySelector("[data-report-filename]");
+    var browse = wrap.querySelector("[data-report-browse]");
+    var clear = wrap.querySelector("[data-report-clear]");
+    var fileInput = wrap.querySelector(".report-upload__input");
+
+    if (!upload || !nameEl) {
+      return;
+    }
+
+    if (file) {
+      upload.classList.add("is-selected");
+      nameEl.textContent = truncateFileName(file.name);
+      if (browse) {
+        browse.hidden = true;
+      }
+      if (clear) {
+        clear.hidden = false;
+      }
+      wrap.classList.remove("is-error");
+      var err = wrap.querySelector("[data-report-file-error]");
+      if (err) {
+        err.hidden = true;
+      }
+    } else {
+      upload.classList.remove("is-selected");
+      nameEl.textContent = "PDF (max 10MB)";
+      if (browse) {
+        browse.hidden = false;
+      }
+      if (clear) {
+        clear.hidden = true;
+      }
+      if (fileInput) {
+        fileInput.value = "";
+      }
+    }
+  }
+
+  function validateReportForm(form) {
+    var emailField = form.querySelector(".report-field:not(.report-field--upload)");
+    var emailInput = form.querySelector('input[type="email"]');
+    var uploadWrap = form.querySelector("[data-report-upload]");
+    var fileInput = form.querySelector(".report-upload__input");
+    var emailError = form.querySelector("[data-report-email-error]");
+    var fileError = form.querySelector("[data-report-file-error]");
+    var emailOk = EMAIL_RE.test((emailInput.value || "").trim());
+    var file = fileInput && fileInput.files && fileInput.files[0];
+    var fileOk =
+      !!file &&
+      (file.type === "application/pdf" || /\.pdf$/i.test(file.name)) &&
+      file.size <= REPORT_MAX_BYTES;
+
+    if (emailField) {
+      emailField.classList.toggle("is-error", !emailOk);
+    }
+    if (emailInput) {
+      emailInput.setAttribute("aria-invalid", emailOk ? "false" : "true");
+    }
+    if (emailError) {
+      emailError.hidden = emailOk;
+    }
+
+    if (uploadWrap) {
+      uploadWrap.classList.toggle("is-error", !fileOk);
+    }
+    if (fileError) {
+      fileError.hidden = fileOk;
+      if (!fileOk && file && file.size > REPORT_MAX_BYTES) {
+        fileError.textContent = "File must be 10MB or smaller.";
+      } else if (!fileOk && file) {
+        fileError.textContent = "Upload a PDF file.";
+      } else {
+        fileError.textContent = "Upload a PDF up to 10MB.";
+      }
+    }
+
+    return emailOk && fileOk;
+  }
+
+  if (reportModal) {
+    document.querySelectorAll("[data-open-report-modal]").forEach(function (trigger) {
+      trigger.addEventListener("click", function (event) {
+        event.preventDefault();
+        openReportModal();
+      });
+    });
+
+    reportModal.querySelectorAll("[data-report-close]").forEach(function (node) {
+      node.addEventListener("click", closeReportModal);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && reportModalOpen) {
+        closeReportModal();
+      }
+    });
+
+    var form = reportModal.querySelector("[data-report-form]");
+    if (form) {
+      var uploadWrap = form.querySelector("[data-report-upload]");
+      var fileInput = form.querySelector(".report-upload__input");
+      var browse = form.querySelector("[data-report-browse]");
+      var clear = form.querySelector("[data-report-clear]");
+
+      if (browse && fileInput) {
+        browse.addEventListener("click", function () {
+          fileInput.click();
+        });
+      }
+
+      if (clear && uploadWrap) {
+        clear.addEventListener("click", function () {
+          setUploadState(uploadWrap, null);
+        });
+      }
+
+      if (fileInput && uploadWrap) {
+        fileInput.addEventListener("change", function () {
+          var file = fileInput.files && fileInput.files[0];
+          if (!file) {
+            setUploadState(uploadWrap, null);
+            return;
+          }
+          if (file.size > REPORT_MAX_BYTES || !(file.type === "application/pdf" || /\.pdf$/i.test(file.name))) {
+            setUploadState(uploadWrap, null);
+            uploadWrap.classList.add("is-error");
+            var err = uploadWrap.querySelector("[data-report-file-error]");
+            if (err) {
+              err.hidden = false;
+              err.textContent =
+                file.size > REPORT_MAX_BYTES
+                  ? "File must be 10MB or smaller."
+                  : "Upload a PDF file.";
+            }
+            return;
+          }
+          setUploadState(uploadWrap, file);
+        });
+      }
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        if (!validateReportForm(form)) {
+          return;
+        }
+        var submit = form.querySelector(".report-modal__submit");
+        if (submit) {
+          submit.disabled = true;
+          submit.textContent = "Submitting…";
+        }
+        window.setTimeout(function () {
+          if (submit) {
+            submit.disabled = false;
+            submit.textContent = "Submit";
+          }
+          closeReportModal();
+          form.reset();
+          if (uploadWrap) {
+            setUploadState(uploadWrap, null);
+          }
+        }, 700);
+      });
+    }
+  }
 })();
