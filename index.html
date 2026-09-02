@@ -1011,70 +1011,94 @@
         </div>
 
         <div class="report-modal__body">
-          <form class="report-modal__form" data-report-form novalidate>
-            <div class="report-modal__fields">
-              <label class="report-field">
-                <span class="report-field__label">
-                  Business Email <span class="report-field__req" aria-hidden="true">*</span>
-                </span>
-                <input
-                  class="report-field__input"
-                  type="email"
-                  name="email"
-                  autocomplete="email"
-                  placeholder="Enter Business Email"
-                  required
-                />
-                <span class="report-field__error" data-report-email-error hidden>
-                  Enter a valid business email.
-                </span>
-              </label>
-
-              <div class="report-field report-field--upload" data-report-upload>
-                <span class="report-field__label" id="report-upload-label">
-                  Upload your AI Bill <span class="report-field__req" aria-hidden="true">*</span>
-                </span>
-                <div class="report-upload">
+          <div class="report-modal__view report-modal__view--form" data-report-view="form">
+            <form class="report-modal__form" data-report-form novalidate>
+              <div class="report-modal__fields">
+                <label class="report-field">
+                  <span class="report-field__label">
+                    Business Email <span class="report-field__req" aria-hidden="true">*</span>
+                  </span>
                   <input
-                    class="report-upload__input"
-                    type="file"
-                    name="ai_bill"
-                    accept="application/pdf,.pdf"
-                    aria-labelledby="report-upload-label"
+                    class="report-field__input"
+                    type="email"
+                    name="email"
+                    autocomplete="email"
+                    placeholder="Enter Business Email"
                     required
                   />
-                  <span class="report-upload__name" data-report-filename>PDF (max 10MB)</span>
-                  <button class="report-upload__browse" type="button" data-report-browse>
-                    Browse files
-                  </button>
-                  <button
-                    class="report-upload__clear"
-                    type="button"
-                    data-report-clear
-                    aria-label="Remove selected file"
-                    hidden
-                  >
-                    <span aria-hidden="true"></span>
-                  </button>
+                  <span class="report-field__error" data-report-email-error hidden>
+                    Enter a valid business email.
+                  </span>
+                </label>
+
+                <div class="report-field report-field--upload" data-report-upload>
+                  <span class="report-field__label" id="report-upload-label">
+                    Upload your AI Bill <span class="report-field__req" aria-hidden="true">*</span>
+                  </span>
+                  <div class="report-upload">
+                    <input
+                      class="report-upload__input"
+                      type="file"
+                      name="ai_bill"
+                      accept="application/pdf,.pdf"
+                      aria-labelledby="report-upload-label"
+                    />
+                    <span class="report-upload__name" data-report-filename>PDF (max 10MB)</span>
+                    <button class="report-upload__browse" type="button" data-report-browse>
+                      Browse files
+                    </button>
+                    <button
+                      class="report-upload__clear"
+                      type="button"
+                      data-report-clear
+                      aria-label="Remove selected file"
+                      hidden
+                    >
+                      <span aria-hidden="true"></span>
+                    </button>
+                  </div>
+                  <span class="report-field__error" data-report-file-error hidden>
+                    PDF must be 10MB or smaller.
+                  </span>
                 </div>
-                <span class="report-field__error" data-report-file-error hidden>
-                  Upload a PDF up to 10MB.
-                </span>
               </div>
+
+              <button class="report-modal__submit" type="submit" data-report-submit>Submit</button>
+            </form>
+
+            <p class="report-modal__legal">
+              By submitting this form, you acknowledge that you have read and agree to
+              <a
+                href="https://www.cloudkeeper.com/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                >CloudKeeper Privacy Policy</a
+              >.
+            </p>
+          </div>
+
+          <div
+            class="report-modal__view report-modal__view--success"
+            data-report-view="success"
+            role="status"
+            aria-live="polite"
+            aria-hidden="true"
+          >
+            <img
+              class="report-modal__success-icon"
+              src="assets/icons/success-tick.svg"
+              alt=""
+              width="83"
+              height="83"
+            />
+            <div class="report-modal__success-copy">
+              <h3 class="report-modal__success-title">Thanks — you're all set!</h3>
+              <p class="report-modal__success-body">
+                Your AI Bill is under review. We'll email your personalized AI Cost Index Report
+                shortly.
+              </p>
             </div>
-
-            <button class="report-modal__submit" type="submit">Submit</button>
-          </form>
-
-          <p class="report-modal__legal">
-            By submitting this form, you acknowledge that you have read and agree to
-            <a
-              href="https://www.cloudkeeper.com/privacy-policy"
-              target="_blank"
-              rel="noopener noreferrer"
-              >CloudKeeper Privacy Policy</a
-            >.
-          </p>
+          </div>
         </div>
       </div>
     </div>

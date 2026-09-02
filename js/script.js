@@ -620,39 +620,49 @@
   var reportModal = document.getElementById("report-modal");
   var reportModalOpen = false;
   var reportLastFocus = null;
+  var reportSelectedFile = null;
   var REPORT_MAX_BYTES = 10 * 1024 * 1024;
+  var REPORT_PDF_SIZE_ERROR = "PDF must be 10MB or smaller.";
+  var REPORT_PDF_TYPE_ERROR = "Please upload a PDF file.";
+  var REPORT_PDF_REQUIRED_ERROR = "Upload a PDF up to 10MB.";
 
-  function openReportModal() {
-    if (!reportModal || reportModalOpen) {
-      return;
+  function isPdfFile(file) {
+    if (!file) {
+      return false;
     }
-
-    reportLastFocus = document.activeElement;
-    reportModalOpen = true;
-    reportModal.hidden = false;
-    reportModal.classList.add("is-open");
-    reportModal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("report-modal-open");
-
-    var closeBtn = reportModal.querySelector(".report-modal__close");
-    if (closeBtn) {
-      closeBtn.focus();
-    }
+    return file.type === "application/pdf" || /\.pdf$/i.test(file.name || "");
   }
 
-  function closeReportModal() {
-    if (!reportModal || !reportModalOpen) {
+  function getPdfValidationError(file) {
+    if (!file) {
+      return REPORT_PDF_REQUIRED_ERROR;
+    }
+    if (!isPdfFile(file)) {
+      return REPORT_PDF_TYPE_ERROR;
+    }
+    if (file.size > REPORT_MAX_BYTES) {
+      return REPORT_PDF_SIZE_ERROR;
+    }
+    return "";
+  }
+
+  function setFileFieldError(wrap, message) {
+    var err = wrap && wrap.querySelector("[data-report-file-error]");
+    if (!wrap) {
       return;
     }
-
-    reportModalOpen = false;
-    reportModal.classList.remove("is-open");
-    reportModal.hidden = true;
-    reportModal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("report-modal-open");
-
-    if (reportLastFocus && typeof reportLastFocus.focus === "function") {
-      reportLastFocus.focus();
+    if (message) {
+      wrap.classList.add("is-error");
+      if (err) {
+        err.textContent = message;
+        err.hidden = false;
+      }
+    } else {
+      wrap.classList.remove("is-error");
+      if (err) {
+        err.hidden = true;
+        err.textContent = REPORT_PDF_REQUIRED_ERROR;
+      }
     }
   }
 
@@ -665,15 +675,17 @@
   }
 
   function setUploadState(wrap, file) {
-    var upload = wrap.querySelector(".report-upload");
-    var nameEl = wrap.querySelector("[data-report-filename]");
-    var browse = wrap.querySelector("[data-report-browse]");
-    var clear = wrap.querySelector("[data-report-clear]");
-    var fileInput = wrap.querySelector(".report-upload__input");
+    var upload = wrap && wrap.querySelector(".report-upload");
+    var nameEl = wrap && wrap.querySelector("[data-report-filename]");
+    var browse = wrap && wrap.querySelector("[data-report-browse]");
+    var clear = wrap && wrap.querySelector("[data-report-clear]");
+    var fileInput = wrap && wrap.querySelector(".report-upload__input");
 
     if (!upload || !nameEl) {
       return;
     }
+
+    reportSelectedFile = file || null;
 
     if (file) {
       upload.classList.add("is-selected");
@@ -684,11 +696,7 @@
       if (clear) {
         clear.hidden = false;
       }
-      wrap.classList.remove("is-error");
-      var err = wrap.querySelector("[data-report-file-error]");
-      if (err) {
-        err.hidden = true;
-      }
+      setFileFieldError(wrap, "");
     } else {
       upload.classList.remove("is-selected");
       nameEl.textContent = "PDF (max 10MB)";
@@ -704,19 +712,117 @@
     }
   }
 
+  /* Visibility is class-driven (.is-success). Do not use [hidden] on form/success —
+     global [hidden]{display:none!important} fights the success layout. */
+  function showReportFormState() {
+    if (!reportModal) {
+      return;
+    }
+    var successView = reportModal.querySelector('[data-report-view="success"]');
+    reportModal.classList.remove("is-success");
+    if (successView) {
+      successView.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  function showReportSuccessState() {
+    if (!reportModal) {
+      return;
+    }
+    var successView = reportModal.querySelector('[data-report-view="success"]');
+    var closeBtn = reportModal.querySelector(".report-modal__close");
+
+    reportModal.classList.add("is-success");
+    if (successView) {
+      successView.setAttribute("aria-hidden", "false");
+    }
+    if (closeBtn) {
+      closeBtn.focus();
+    }
+  }
+
+  function resetReportModal() {
+    var form = reportModal && reportModal.querySelector("[data-report-form]");
+    var uploadWrap = reportModal && reportModal.querySelector("[data-report-upload]");
+    var submit = form && form.querySelector("[data-report-submit]");
+
+    showReportFormState();
+    reportSelectedFile = null;
+
+    if (form) {
+      form.reset();
+      form.querySelectorAll(".report-field.is-error").forEach(function (field) {
+        field.classList.remove("is-error");
+      });
+      form.querySelectorAll("[data-report-email-error], [data-report-file-error]").forEach(function (err) {
+        err.hidden = true;
+      });
+    }
+    if (uploadWrap) {
+      setUploadState(uploadWrap, null);
+      setFileFieldError(uploadWrap, "");
+    }
+    if (submit) {
+      submit.disabled = false;
+      submit.textContent = "Submit";
+    }
+  }
+
+  function openReportModal() {
+    if (!reportModal || reportModalOpen) {
+      return;
+    }
+
+    resetReportModal();
+    reportLastFocus = document.activeElement;
+    reportModalOpen = true;
+    reportModal.hidden = false;
+    reportModal.classList.add("is-open");
+    reportModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("report-modal-open");
+
+    var emailInput = reportModal.querySelector('input[type="email"]');
+    if (emailInput) {
+      emailInput.focus();
+    } else {
+      var closeBtn = reportModal.querySelector(".report-modal__close");
+      if (closeBtn) {
+        closeBtn.focus();
+      }
+    }
+  }
+
+  function closeReportModal() {
+    if (!reportModal || !reportModalOpen) {
+      return;
+    }
+
+    reportModalOpen = false;
+    reportModal.classList.remove("is-open");
+    reportModal.hidden = true;
+    reportModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("report-modal-open");
+    resetReportModal();
+
+    if (reportLastFocus && typeof reportLastFocus.focus === "function") {
+      reportLastFocus.focus();
+    }
+  }
+
   function validateReportForm(form) {
     var emailField = form.querySelector(".report-field:not(.report-field--upload)");
     var emailInput = form.querySelector('input[type="email"]');
     var uploadWrap = form.querySelector("[data-report-upload]");
-    var fileInput = form.querySelector(".report-upload__input");
     var emailError = form.querySelector("[data-report-email-error]");
-    var fileError = form.querySelector("[data-report-file-error]");
-    var emailOk = EMAIL_RE.test((emailInput.value || "").trim());
-    var file = fileInput && fileInput.files && fileInput.files[0];
-    var fileOk =
-      !!file &&
-      (file.type === "application/pdf" || /\.pdf$/i.test(file.name)) &&
-      file.size <= REPORT_MAX_BYTES;
+    var emailValue = emailInput ? (emailInput.value || "").trim() : "";
+    var emailOk = EMAIL_RE.test(emailValue);
+    var file =
+      reportSelectedFile ||
+      (form.querySelector(".report-upload__input") &&
+        form.querySelector(".report-upload__input").files &&
+        form.querySelector(".report-upload__input").files[0]);
+    var fileErrorMsg = getPdfValidationError(file);
+    var fileOk = !fileErrorMsg;
 
     if (emailField) {
       emailField.classList.toggle("is-error", !emailOk);
@@ -728,19 +834,7 @@
       emailError.hidden = emailOk;
     }
 
-    if (uploadWrap) {
-      uploadWrap.classList.toggle("is-error", !fileOk);
-    }
-    if (fileError) {
-      fileError.hidden = fileOk;
-      if (!fileOk && file && file.size > REPORT_MAX_BYTES) {
-        fileError.textContent = "File must be 10MB or smaller.";
-      } else if (!fileOk && file) {
-        fileError.textContent = "Upload a PDF file.";
-      } else {
-        fileError.textContent = "Upload a PDF up to 10MB.";
-      }
-    }
+    setFileFieldError(uploadWrap, fileOk ? "" : fileErrorMsg);
 
     return emailOk && fileOk;
   }
@@ -777,8 +871,11 @@
       }
 
       if (clear && uploadWrap) {
-        clear.addEventListener("click", function () {
+        clear.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
           setUploadState(uploadWrap, null);
+          setFileFieldError(uploadWrap, "");
         });
       }
 
@@ -787,46 +884,42 @@
           var file = fileInput.files && fileInput.files[0];
           if (!file) {
             setUploadState(uploadWrap, null);
+            setFileFieldError(uploadWrap, "");
             return;
           }
-          if (file.size > REPORT_MAX_BYTES || !(file.type === "application/pdf" || /\.pdf$/i.test(file.name))) {
+
+          var errorMsg = getPdfValidationError(file);
+          if (errorMsg) {
             setUploadState(uploadWrap, null);
-            uploadWrap.classList.add("is-error");
-            var err = uploadWrap.querySelector("[data-report-file-error]");
-            if (err) {
-              err.hidden = false;
-              err.textContent =
-                file.size > REPORT_MAX_BYTES
-                  ? "File must be 10MB or smaller."
-                  : "Upload a PDF file.";
-            }
+            setFileFieldError(uploadWrap, errorMsg);
             return;
           }
+
           setUploadState(uploadWrap, file);
         });
       }
 
       form.addEventListener("submit", function (event) {
         event.preventDefault();
+        event.stopPropagation();
+
+        /* Already on success — keep modal open; never close from submit */
+        if (reportModal.classList.contains("is-success")) {
+          return;
+        }
+
         if (!validateReportForm(form)) {
           return;
         }
-        var submit = form.querySelector(".report-modal__submit");
+
+        var submit = form.querySelector("[data-report-submit]");
         if (submit) {
           submit.disabled = true;
           submit.textContent = "Submitting…";
         }
-        window.setTimeout(function () {
-          if (submit) {
-            submit.disabled = false;
-            submit.textContent = "Submit";
-          }
-          closeReportModal();
-          form.reset();
-          if (uploadWrap) {
-            setUploadState(uploadWrap, null);
-          }
-        }, 700);
+
+        /* Keep popup open; swap form view → success view in place */
+        showReportSuccessState();
       });
     }
   }
