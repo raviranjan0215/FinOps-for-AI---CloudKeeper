@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Mission Possible favicon — CloudKeeper brand -->
+  <rect width="32" height="32" rx="8" fill="#0A1535"/>
+  <path fill="url(#g)" d="M8 22.5V9.5h3.4l3.2 7.6h.15L18 9.5h3.35v13H18.7v-8.4h-.12L15.2 22.5h-2.55L9.3 14.1H9.18v8.4H8Z"/>
+  <path fill="url(#g)" d="M22.4 22.5 18.7 9.5h2.95l2.55 8.7h.1l2.55-8.7H29.8l-3.7 13h-3.7Z"/>
+  <defs>
+    <linearGradient id="g" x1="8" y1="23" x2="30" y2="9" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17A5FB"/>
+      <stop offset="0.48" stop-color="#9A4BFF"/>
+      <stop offset="1" stop-color="#ED0082"/>
+    </linearGradient>
+  </defs>
+</svg>

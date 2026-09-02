@@ -1,0 +1,8 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="70" height="88" viewBox="0 0 70 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="doc-donut-chart">
+<rect width="70" height="88" rx="6" fill="white"/>
+<circle id="donut-outer" cx="35" cy="44" r="19" fill="#76CBFF"/>
+<rect id="pie-slice" x="34" y="25" width="20" height="20" fill="#EFEFEF"/>
+<circle id="donut-hole" cx="35" cy="44" r="8" fill="white"/>
+</g>
+</svg>

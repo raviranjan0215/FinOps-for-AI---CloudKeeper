@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="225.297" height="86.1704" viewBox="0 0 225.297 86.1704" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path id="oval-line-travel" d="M28.5751 14.6272C-20.7843 35.8572 8.61574 68.2785 28.5744 75.694C56.9177 86.2246 143.839 89.0191 181.339 75.694C249.208 51.5781 219.92 23.4289 200.84 14.627C164.839 -1.98052 71.3394 -3.76611 28.6751 14.6772" pathLength="1" stroke="url(#paint0_linear_0_32)" stroke-width="3" stroke-dasharray="1 1"/>
+<defs>
+<linearGradient id="paint0_linear_0_32" x1="1.49978" y1="60.3109" x2="40.1032" y2="-42.8678" gradientUnits="userSpaceOnUse">
+<stop stop-color="#17A5FB"/>
+<stop offset="0.5" stop-color="#9A4BFF"/>
+<stop offset="1" stop-color="#ED0082"/>
+</linearGradient>
+</defs>
+</svg>

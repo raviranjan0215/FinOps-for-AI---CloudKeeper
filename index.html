@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>FinOps for AI — CloudKeeper</title>
+    <meta
+      name="description"
+      content="Optimize AI/LLM spend across models, workloads, and the cloud infrastructure powering them. Try FinOps for AI free for 30 days."
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="assets/fonts/roboto-latin.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <link rel="preconnect" href="https://js.hsforms.net" crossorigin />
+    <link rel="preconnect" href="https://forms-na1.hsforms.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180" />
+
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      (function (w, d, id) {
+        var LOAD_DELAY = 2500;
+        var WAKE_EVENTS = ["pointerdown", "keydown", "wheel", "touchstart", "scroll"];
+        var listenerOpts = { once: true, passive: true, capture: true };
+        var timer = null;
+        var started = false;
+
+        function onVisibilityChange() {
+          if (d.visibilityState === "hidden") {
+            start();
+          }
+        }
+
+        function stopWaiting() {
+          WAKE_EVENTS.forEach(function (name) {
+            w.removeEventListener(name, start, listenerOpts);
+          });
+          d.removeEventListener("visibilitychange", onVisibilityChange);
+          w.removeEventListener("pagehide", start);
+          if (timer !== null) {
+            w.clearTimeout(timer);
+            timer = null;
+          }
+        }
+
+        function start() {
+          if (started) {
+            return;
+          }
+          started = true;
+          stopWaiting();
+          w.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+          var script = d.createElement("script");
+          script.async = true;
+          script.src = "https://www.googletagmanager.com/gtm.js?id=" + id;
+          d.head.appendChild(script);
+        }
+
+        WAKE_EVENTS.forEach(function (name) {
+          w.addEventListener(name, start, listenerOpts);
+        });
+        d.addEventListener("visibilitychange", onVisibilityChange);
+        w.addEventListener("pagehide", start);
+        w.addEventListener(
+          "load",
+          function () {
+            timer = w.setTimeout(start, LOAD_DELAY);
+          },
+          { once: true }
+        );
+      })(window, document, "GTM-KTGV77T");
+    </script>
+  </head>
+  <body>
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-KTGV77T"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+
+    <header class="header" id="site-header">
+      <div class="header__inner">
+        <a class="header__logo" href="#hero" data-scroll aria-label="CloudKeeper home">
+          <img
+            src="assets/logos/cloudkeeper-white.png"
+            alt="CloudKeeper"
+            width="160"
+            height="35"
+          />
+        </a>
+
+        <button
+          class="header__toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          aria-label="Open menu"
+        >
+          <span class="header__toggle-icon" aria-hidden="true">
+            <span class="header__toggle-bar"></span>
+            <span class="header__toggle-bar"></span>
+            <span class="header__toggle-bar"></span>
+          </span>
+        </button>
+
+        <nav class="header__nav" id="primary-nav" aria-label="Primary">
+          <ul class="header__list">
+            <li>
+              <a class="header__link header__link--active" href="#hero" data-scroll>Home</a>
+            </li>
+            <li>
+              <a class="header__link" href="#capabilities" data-scroll>Capabilities</a>
+            </li>
+            <li>
+              <a class="header__link" href="#offerings" data-scroll>Offerings</a>
+            </li>
+            <li>
+              <a class="header__link" href="#resources" data-scroll>Resources</a>
+            </li>
+            <li>
+              <a class="header__link" href="#about" data-scroll>Why CloudKeeper?</a>
+            </li>
+          </ul>
+          <a
+            class="cta cta--nav header__cta header__cta--mobile"
+            href="#hero"
+            data-scroll
+            data-focus-form
+          >
+            Book a FREE Demo
+            <span class="cta__icon" aria-hidden="true">
+              <img
+                class="cta__icon-img"
+                src="assets/icons/arrow-white.svg"
+                alt=""
+                width="14"
+                height="14"
+              />
+            </span>
+          </a>
+        </nav>
+
+        <a class="cta cta--nav header__cta header__cta--desktop" href="#hero" data-scroll data-focus-form>
+          Book a FREE Demo
+          <span class="cta__icon" aria-hidden="true">
+            <img
+              class="cta__icon-img"
+              src="assets/icons/arrow-white.svg"
+              alt=""
+              width="14"
+              height="14"
+            />
+          </span>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="hero">
+        <div class="hero__bg" aria-hidden="true">
+          <img
+            class="hero__bg-img"
+            src="assets/images/hero-bg-finl-use.png"
+            alt=""
+            width="1440"
+            height="776"
+          />
+        </div>
+
+        <div class="hero__inner">
+          <div class="hero__copy">
+            <h1 class="hero__title-lockup">
+              <span class="hero__kicker">The full stack</span>
+              <img
+                class="hero__wordmark"
+                src="assets/images/hero-wordmark.png"
+                alt="FinOps for AI"
+                width="339"
+                height="111"
+              />
+            </h1>
+            <p class="hero__lede">
+              Optimize AI/LLM spend across models, workloads, and the cloud infrastructure
+              powering them.
+            </p>
+          </div>
+
+          <div class="lead-card-shell">
+            <div class="lead-card-shell__border" aria-hidden="true"></div>
+            <svg
+              class="lead-card-shell__travel"
+              viewBox="0 0 459 423"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <defs>
+                <linearGradient
+                  id="lead-border-gradient"
+                  x1="2"
+                  y1="298.281"
+                  x2="297.277"
+                  y2="-22.3662"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#17A5FB" />
+                  <stop offset="0.5" stop-color="#9A4BFF" />
+                  <stop offset="1" stop-color="#ED0082" />
+                </linearGradient>
+              </defs>
+              <path
+                pathLength="1"
+                d="M12.5 2H447C452.523 2 457 6.477 457 12V411C457 416.523 452.523 421 447 421H12C6.477 421 2 416.523 2 411V12C2 6.477 6.477 2 12 2"
+                fill="none"
+                stroke="url(#lead-border-gradient)"
+                stroke-width="4"
+                stroke-linecap="round"
+              />
+            </svg>
+            <div class="lead-card" data-form-card>
+            <canvas class="lead-card__confetti" data-confetti-canvas aria-hidden="true"></canvas>
+            <form class="lead-form" data-lead-form novalidate>
+              <h2 class="lead-form__title">See What You Could Save on AI Spend</h2>
+              <label class="field">
+                <span class="visually-hidden">Work email</span>
+                <input
+                  class="field__input"
+                  type="email"
+                  name="email"
+                  autocomplete="email"
+                  placeholder="Enter your work email"
+                  required
+                />
+                <span class="field__error" data-error hidden>Enter a valid work email.</span>
+              </label>
+              <button class="cta cta--block" type="submit">
+                <span data-cta-label>Book a Demo</span>
+                <span class="cta__icon" aria-hidden="true">
+                  <img
+                    class="cta__icon-img"
+                    src="assets/icons/arrow-white.svg"
+                    alt=""
+                    width="17"
+                    height="17"
+                  />
+                </span>
+              </button>
+              <p class="lead-form__note">
+                <span class="lead-form__star">*</span>Try FinOps for AI free for 30 days.
+              </p>
+            </form>
+            <div class="lead-success" data-lead-success hidden role="status" aria-live="polite">
+              <img
+                class="lead-success__icon"
+                src="assets/images/success-tick-solution.png"
+                alt=""
+                width="118"
+                height="118"
+              />
+              <div class="lead-success__copy">
+                <h3 class="lead-success__title">Demo Booked!</h3>
+                <p class="lead-success__body">
+                  Thanks for your interest in FinOps for AI.<br />
+                  A confirmation is on its way to your inbox.
+                </p>
+              </div>
+            </div>
+            <div id="hs-form-hero" class="hs-mount hs-mount--hero" hidden></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="trust">
+          <div class="trust__border" aria-hidden="true"></div>
+          <ul class="trust__row">
+            <li class="trust__item">
+              <img
+                src="assets/logos/trust-g2.png"
+                alt="G2 — 4.8 out of 5 stars, 500+ happy customers"
+                width="208"
+                height="60"
+              />
+            </li>
+            <li class="trust__item">
+              <img
+                src="assets/logos/trust-gartner.png"
+                alt="Gartner Peer Insights"
+                width="127"
+                height="65"
+              />
+            </li>
+            <li class="trust__item">
+              <img
+                src="assets/logos/trust-aws.png"
+                alt="AWS Partner — AI Services Competency"
+                width="75"
+                height="60"
+              />
+            </li>
+            <li class="trust__item">
+              <img
+                src="assets/logos/trust-gcp.png"
+                alt="Google Cloud Partner"
+                width="132"
+                height="65"
+              />
+            </li>
+            <li class="trust__item">
+              <img
+                src="assets/logos/trust-microsoft.png"
+                alt="Microsoft Solutions Partner"
+                width="134"
+                height="62"
+              />
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="journey" id="capabilities">
+        <div class="journey__inner">
+          <div class="journey__copy reveal">
+            <h2 class="journey__title">
+              Wherever you are in your AI journey,
+              <span class="gradient-text">we meet you there</span>
+            </h2>
+            <a class="cta" href="#hero" data-scroll data-focus-form>
+              Book a Demo
+              <span class="cta__icon" aria-hidden="true">
+                <img
+                  class="cta__icon-img"
+                  src="assets/icons/arrow-white.svg"
+                  alt=""
+                  width="17"
+                  height="17"
+                />
+              </span>
+            </a>
+          </div>
+
+          <div class="journey__steps-wrap">
+            <div class="journey__track" aria-hidden="true">
+              <span class="journey__track-line"></span>
+              <span class="journey__track-progress"></span>
+            </div>
+            <ol class="journey__steps" data-journey-steps>
+            <li class="journey__step journey__step--active reveal" style="--d: 0ms">
+              <span class="journey__num">1</span>
+              <span class="journey__q">Choosing a model?</span>
+              <span class="journey__a">We help you pick right.</span>
+            </li>
+            <li class="journey__step reveal" style="--d: 90ms">
+              <span class="journey__num">2</span>
+              <span class="journey__q">Launching a workload?</span>
+              <span class="journey__a">We get you deployment-ready.</span>
+            </li>
+            <li class="journey__step reveal" style="--d: 180ms">
+              <span class="journey__num">3</span>
+              <span class="journey__q">Already spending?</span>
+              <span class="journey__a">We give you full visibility.</span>
+            </li>
+            <li class="journey__step reveal" style="--d: 270ms">
+              <span class="journey__num">4</span>
+              <span class="journey__q">Watching AI costs climb?</span>
+              <span class="journey__a">We help you optimize and save.</span>
+            </li>
+            <li class="journey__step reveal" style="--d: 360ms">
+              <span class="journey__num">5</span>
+              <span class="journey__q">Scaling across teams?</span>
+              <span class="journey__a">We bring in FDEs to own operations.</span>
+            </li>
+          </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="offerings" id="offerings">
+        <div class="offerings__inner">
+          <h2 class="section-title reveal">
+            One Partner for End-to-End
+            <span class="gradient-text">AI/LLM Cost Management</span>
+          </h2>
+
+          <div class="pill-tabs" role="tablist" aria-label="Offerings">
+            <button class="pill-tabs__btn is-active" type="button" role="tab" aria-selected="true" data-tab="visibility">
+              Visibility
+            </button>
+            <button class="pill-tabs__btn" type="button" role="tab" aria-selected="false" data-tab="rate">
+              Rate
+            </button>
+            <button class="pill-tabs__btn" type="button" role="tab" aria-selected="false" data-tab="usage">
+              Usage
+            </button>
+          </div>
+
+          <div class="offer-panel is-active" data-panel="visibility" role="tabpanel">
+            <ul class="offer-grid">
+              <li class="offer-card reveal" style="--d: 0ms">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">AI licensing</p>
+                    <div class="offer-card__icon offer-card__icon--26" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/key.svg" alt="" width="26" height="26" />
+                      <img class="offer-card__icon-hover" src="assets/icons/offerings/key-hover.svg" alt="" width="26" height="26" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card reveal" style="--d: 80ms">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">AI inference</p>
+                    <div class="offer-card__icon offer-card__icon--26" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/layers.svg" alt="" width="26" height="26" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/layers.svg" alt="" width="26" height="26" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card reveal" style="--d: 160ms">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">AI infrastructure</p>
+                    <div class="offer-card__icon offer-card__icon--36" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/pct.svg" alt="" width="36" height="36" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pct.svg" alt="" width="36" height="36" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card reveal" style="--d: 240ms">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Token usage analytics</p>
+                    <div class="offer-card__icon offer-card__icon--28" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/pie.svg" alt="" width="28" height="28" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pie.svg" alt="" width="28" height="28" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card reveal" style="--d: 320ms">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">GPU utilization insights</p>
+                    <div class="offer-card__icon offer-card__icon--32" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card reveal" style="--d: 400ms">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Unified multi-cloud dashboard</p>
+                    <div class="offer-card__icon offer-card__icon--cloud" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/cloud.svg" alt="" width="30" height="32" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/cloud.svg" alt="" width="30" height="32" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="offer-panel" data-panel="rate" role="tabpanel" hidden>
+            <ul class="offer-grid">
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">AI commitments management</p>
+                    <div class="offer-card__icon offer-card__icon--26" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/key.svg" alt="" width="26" height="26" />
+                      <img class="offer-card__icon-hover" src="assets/icons/offerings/key-hover.svg" alt="" width="26" height="26" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Enterprise AI billing</p>
+                    <div class="offer-card__icon offer-card__icon--38" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/billing.svg" alt="" width="38" height="38" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/billing.svg" alt="" width="38" height="38" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Claude access &amp; procurement</p>
+                    <div class="offer-card__icon offer-card__icon--36" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/pct.svg" alt="" width="36" height="36" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pct.svg" alt="" width="36" height="36" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Cost-efficient pricing</p>
+                    <div class="offer-card__icon offer-card__icon--28" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/pie.svg" alt="" width="28" height="28" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pie.svg" alt="" width="28" height="28" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Spend optimization</p>
+                    <div class="offer-card__icon offer-card__icon--32" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Unified multi-cloud dashboard</p>
+                    <div class="offer-card__icon offer-card__icon--cloud" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/cloud.svg" alt="" width="30" height="32" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/cloud.svg" alt="" width="30" height="32" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="offer-panel" data-panel="usage" role="tabpanel" hidden>
+            <ul class="offer-grid">
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">GPU rightsizing</p>
+                    <div class="offer-card__icon offer-card__icon--26" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/key.svg" alt="" width="26" height="26" />
+                      <img class="offer-card__icon-hover" src="assets/icons/offerings/key-hover.svg" alt="" width="26" height="26" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Infrastructure optimization</p>
+                    <div class="offer-card__icon offer-card__icon--38" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/billing.svg" alt="" width="38" height="38" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/billing.svg" alt="" width="38" height="38" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Workload optimization</p>
+                    <div class="offer-card__icon offer-card__icon--36" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/pct.svg" alt="" width="36" height="36" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pct.svg" alt="" width="36" height="36" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Bedrock optimization</p>
+                    <div class="offer-card__icon offer-card__icon--28" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/pie.svg" alt="" width="28" height="28" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pie.svg" alt="" width="28" height="28" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Resource utilization insights</p>
+                    <div class="offer-card__icon offer-card__icon--32" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="offer-card">
+                <div class="offer-card__body">
+                  <div class="offer-card__row">
+                    <p class="offer-card__title">Forward Deployed Engineers (FDE)</p>
+                    <div class="offer-card__icon offer-card__icon--cloud" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/cloud.svg" alt="" width="30" height="32" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/cloud.svg" alt="" width="30" height="32" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <a class="cta" href="#hero" data-scroll data-focus-form>
+            Book a Demo
+            <span class="cta__icon" aria-hidden="true">
+              <img
+                class="cta__icon-img"
+                src="assets/icons/arrow-white.svg"
+                alt=""
+                width="17"
+                height="17"
+              />
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <section class="resources" id="resources">
+        <div class="resources__inner">
+          <header class="resources__head reveal">
+            <h2 class="section-title">
+              Are You Getting the
+              <span class="gradient-text">Most from Your AI?</span>
+            </h2>
+            <p class="resources__lede">
+              Explore free tools, practical guides, and expert sessions to help you choose the
+              right models, optimize AI costs, and scale AI with confidence.
+            </p>
+          </header>
+
+          <ul class="resource-list">
+            <li class="resource-card reveal" style="--d: 0ms">
+              <div class="resource-card__thumb">
+                <img
+                  src="assets/images/guide-thumb.png"
+                  alt=""
+                  width="216"
+                  height="128"
+                />
+              </div>
+              <div class="resource-card__copy">
+                <h3>FinOps for AI Guide</h3>
+                <p>
+                  Learn practical strategies to gain visibility, optimize AI costs, and build a
+                  cost-efficient AI practice.
+                </p>
+              </div>
+              <a class="cta cta--ghost" href="#hero" data-scroll data-focus-form>
+                Download the Guide
+                <span class="cta__icon" aria-hidden="true">
+                  <img
+                    class="cta__icon-img cta__icon-img--default"
+                    src="assets/icons/arrow-blue.svg"
+                    alt=""
+                    width="17"
+                    height="17"
+                  />
+                  <img
+                    class="cta__icon-img cta__icon-img--hover"
+                    src="assets/icons/arrow-white.svg"
+                    alt=""
+                    width="17"
+                    height="17"
+                  />
+                </span>
+              </a>
+            </li>
+            <li class="resource-card reveal" style="--d: 90ms">
+              <div class="resource-card__thumb">
+                <img
+                  src="assets/images/report-thumb.png"
+                  alt=""
+                  width="216"
+                  height="128"
+                />
+              </div>
+              <div class="resource-card__copy">
+                <h3>Get a Free AI Cost Index Report</h3>
+                <p>Benchmark your AI environment against cost and efficiency metrics.</p>
+              </div>
+              <a class="cta cta--ghost" href="#hero" data-scroll data-focus-form>
+                Get the Report
+                <span class="cta__icon" aria-hidden="true">
+                  <img
+                    class="cta__icon-img cta__icon-img--default"
+                    src="assets/icons/arrow-blue.svg"
+                    alt=""
+                    width="17"
+                    height="17"
+                  />
+                  <img
+                    class="cta__icon-img cta__icon-img--hover"
+                    src="assets/icons/arrow-white.svg"
+                    alt=""
+                    width="17"
+                    height="17"
+                  />
+                </span>
+              </a>
+            </li>
+            <li class="resource-card reveal" style="--d: 180ms">
+              <div class="resource-card__thumb">
+                <img
+                  src="assets/images/compare-thumb.png"
+                  alt=""
+                  width="216"
+                  height="128"
+                />
+              </div>
+              <div class="resource-card__copy">
+                <h3>Comparison &amp; Intelligence Platform</h3>
+                <p>
+                  Compare leading AI models based on cost, performance, latency, and business fit.
+                </p>
+              </div>
+              <a class="cta cta--ghost" href="#hero" data-scroll data-focus-form>
+                Compare AI Models
+                <span class="cta__icon" aria-hidden="true">
+                  <img
+                    class="cta__icon-img cta__icon-img--default"
+                    src="assets/icons/arrow-blue.svg"
+                    alt=""
+                    width="17"
+                    height="17"
+                  />
+                  <img
+                    class="cta__icon-img cta__icon-img--hover"
+                    src="assets/icons/arrow-white.svg"
+                    alt=""
+                    width="17"
+                    height="17"
+                  />
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="about" id="about">
+        <div class="about__inner">
+          <h2 class="section-title reveal">About CloudKeeper</h2>
+          <p class="about__body reveal">
+            CloudKeeper is the only
+            <strong>outcome-driven AI &amp; Cloud Cost Optimisation</strong>
+            partner, delivering guaranteed, continuous savings across cloud and AI environments.
+            Combining deep FinOps expertise, proprietary technology, and hands-on execution, we
+            help organisations reduce spend by an average of 20%—without upfront costs or
+            long-term commitments.
+          </p>
+
+          <div class="partner-cards">
+            <article class="partner-card reveal" style="--d: 0ms">
+              <div class="partner-card__badge">
+                <img
+                  src="assets/logos/partner-aws-card.png"
+                  alt="AWS Partner"
+                  width="73"
+                  height="75"
+                />
+              </div>
+              <p>Certified AWS AI<br />Services Provider</p>
+            </article>
+            <article class="partner-card reveal" style="--d: 100ms">
+              <div class="partner-card__badge partner-card__badge--ant">
+                <img
+                  src="assets/logos/anthropic-wordmark.png"
+                  alt="Anthropic"
+                  width="163"
+                  height="19"
+                />
+              </div>
+              <p>Authorised Reseller of<br />Anthropic’s Claude AI Models.</p>
+            </article>
+          </div>
+
+          <ul class="logo-cloud">
+            <li class="reveal" style="--d: 0ms">
+              <img src="assets/logos/airmeet.png" alt="Airmeet" width="129" height="30" />
+            </li>
+            <li class="reveal" style="--d: 60ms">
+              <img src="assets/logos/crexi.png" alt="CREXi" width="126" height="26" />
+            </li>
+            <li class="reveal" style="--d: 120ms">
+              <img src="assets/logos/wishpond.png" alt="Wishpond" width="128" height="28" />
+            </li>
+            <li class="reveal" style="--d: 180ms">
+              <img src="assets/logos/hypercare.png" alt="Hypercare" width="134" height="24" />
+            </li>
+            <li class="reveal" style="--d: 240ms">
+              <img src="assets/logos/icabbi.png" alt="iCabbi" width="26" height="24" />
+            </li>
+            <li class="reveal" style="--d: 300ms">
+              <img src="assets/logos/client-46514.png" alt="" width="115" height="29" />
+            </li>
+            <li class="reveal" style="--d: 360ms">
+              <img src="assets/logos/jaxsta.png" alt="jaxsta" width="86" height="31" />
+            </li>
+            <li class="reveal" style="--d: 420ms">
+              <img src="assets/logos/movista.png" alt="MOVISTA" width="143" height="38" />
+            </li>
+            <li class="reveal" style="--d: 480ms">
+              <img src="assets/logos/radix.png" alt="RADIX" width="102" height="26" />
+            </li>
+            <li class="reveal" style="--d: 540ms">
+              <img
+                src="assets/logos/singular-decisions.png"
+                alt="singular decisions"
+                width="69"
+                height="30"
+              />
+            </li>
+            <li class="reveal" style="--d: 600ms">
+              <img src="assets/logos/creditsense.png" alt="CreditSense" width="147" height="20" />
+            </li>
+            <li class="reveal" style="--d: 660ms">
+              <img src="assets/logos/qoria.png" alt="Qoria" width="98" height="28" />
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <section class="footer-cta" id="footer-cta">
+      <img
+        class="footer-cta__left-graphic"
+        src="assets/images/footer-cta-left-graphic.png"
+        alt=""
+        width="260"
+        height="418"
+        aria-hidden="true"
+      />
+      <img
+        class="footer-cta__right-graphic"
+        src="assets/images/footer-cta-right-graphic.png"
+        alt=""
+        width="328"
+        height="418"
+        aria-hidden="true"
+      />
+      <div class="footer-cta__inner">
+        <div class="footer-cta__copy reveal">
+          <div class="footer-cta__title-wrap">
+            <img
+              class="footer-cta__ring"
+              src="assets/images/oval-line-travel.svg"
+              alt=""
+              width="222"
+              height="83"
+              aria-hidden="true"
+            />
+            <h2 class="footer-cta__title">See What You Could Save on AI</h2>
+          </div>
+          <p>
+            Book a personalized demo and <strong>get 30 days of FREE access</strong> to FinOps for
+            AI.<br />
+            See it in action, explore your AI costs, and decide for yourself.
+          </p>
+        </div>
+
+        <div class="footer-cta__form lead-card lead-card--inline" data-form-card>
+          <canvas class="lead-card__confetti" data-confetti-canvas aria-hidden="true"></canvas>
+          <form class="lead-form lead-form--inline" data-lead-form novalidate>
+            <label class="field">
+              <span class="visually-hidden">Work email</span>
+              <input
+                class="field__input field__input--light"
+                type="email"
+                name="email"
+                autocomplete="email"
+                placeholder="Enter your work email"
+                required
+              />
+              <span class="field__error" data-error hidden>Enter a valid work email.</span>
+            </label>
+            <button class="cta" type="submit">
+              <span data-cta-label>Book a Demo</span>
+              <span class="cta__icon" aria-hidden="true">
+                <img
+                  class="cta__icon-img"
+                  src="assets/icons/arrow-white.svg"
+                  alt=""
+                  width="17"
+                  height="17"
+                />
+              </span>
+            </button>
+          </form>
+          <div class="lead-success lead-success--compact" data-lead-success hidden role="status" aria-live="polite">
+            <img
+              class="lead-success__icon"
+              src="assets/images/success-tick-solution.png"
+              alt=""
+              width="48"
+              height="48"
+            />
+            <h3 class="lead-success__title">Demo Booked!</h3>
+          </div>
+          <div id="hs-form-footer" class="hs-mount hs-mount--footer" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <div class="footer__social">
+          <p>Connect with us</p>
+          <ul>
+            <li>
+              <a href="https://www.linkedin.com/company/cloudkeeper" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <img src="assets/icons/linkedin.svg" alt="" width="32" height="32" />
+              </a>
+            </li>
+            <li>
+              <a href="https://x.com/cloudkeeper" target="_blank" rel="noopener noreferrer" aria-label="X">
+                <img src="assets/icons/x.svg" alt="" width="32" height="32" />
+              </a>
+            </li>
+            <li>
+              <a href="https://www.youtube.com/@CloudKeeper" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <img src="assets/icons/youtube.svg" alt="" width="32" height="32" />
+              </a>
+            </li>
+            <li>
+              <a href="https://medium.com/cloudkeeper" target="_blank" rel="noopener noreferrer" aria-label="Medium">
+                <img src="assets/icons/medium.svg" alt="" width="32" height="32" />
+              </a>
+            </li>
+          </ul>
+        </div>
+        <nav class="footer__links" aria-label="Legal">
+          <a href="https://www.cloudkeeper.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+          <a href="https://www.cloudkeeper.com/responsible-disclosure" target="_blank" rel="noopener noreferrer">Responsible Disclosure</a>
+        </nav>
+        <div class="footer__brand">
+          <img src="assets/logos/cloudkeeper.png" alt="CloudKeeper" width="174" height="38" />
+          <p>Copyright ©2026</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
+    <script src="js/script.js" defer></script>
+  </body>
+</html>
