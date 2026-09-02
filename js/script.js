@@ -199,6 +199,118 @@
   }
 
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var DEFAULT_EMAIL_ERROR = "Enter a valid work email.";
+  var DUPLICATE_EMAIL_ERROR = "You've already booked a demo with this email.";
+
+  var submittedEmails = (function loadSubmittedEmails() {
+    var set = new Set();
+    try {
+      var raw = window.sessionStorage.getItem("finops-demo-emails");
+      if (raw) {
+        JSON.parse(raw).forEach(function (email) {
+          set.add(String(email).toLowerCase());
+        });
+      }
+    } catch (err) {
+      /* ignore storage errors */
+    }
+    return set;
+  })();
+
+  function persistSubmittedEmails() {
+    try {
+      window.sessionStorage.setItem(
+        "finops-demo-emails",
+        JSON.stringify(Array.from(submittedEmails))
+      );
+    } catch (err) {
+      /* ignore storage errors */
+    }
+  }
+
+  function rememberEmail(email) {
+    submittedEmails.add(email.toLowerCase());
+    persistSubmittedEmails();
+  }
+
+  function isDuplicateEmail(email) {
+    return submittedEmails.has(email.toLowerCase());
+  }
+
+  function getEmailValue(form) {
+    var input = form.querySelector('input[type="email"]');
+    return (input && input.value ? input.value : "").trim();
+  }
+
+  function clearFormError(form) {
+    var alert = form.querySelector("[data-form-error]");
+    if (alert) {
+      alert.hidden = true;
+      alert.textContent = "";
+    }
+  }
+
+  function setFormError(form, message) {
+    var alert = form.querySelector("[data-form-error]");
+    if (alert) {
+      alert.textContent = message;
+      alert.hidden = false;
+    }
+  }
+
+  function setFieldError(form, message) {
+    var field = form.querySelector(".field");
+    var input = form.querySelector('input[type="email"]');
+    var error = form.querySelector("[data-error]");
+    if (field) {
+      field.classList.add("is-error");
+    }
+    if (input) {
+      input.setAttribute("aria-invalid", "true");
+    }
+    if (error) {
+      error.textContent = message;
+      error.hidden = false;
+    }
+  }
+
+  function clearFieldError(form) {
+    var field = form.querySelector(".field");
+    var input = form.querySelector('input[type="email"]');
+    var error = form.querySelector("[data-error]");
+    if (field) {
+      field.classList.remove("is-error");
+    }
+    if (input) {
+      input.setAttribute("aria-invalid", "false");
+    }
+    if (error) {
+      error.textContent = DEFAULT_EMAIL_ERROR;
+      error.hidden = true;
+    }
+    clearFormError(form);
+  }
+
+  function showDuplicateError(form) {
+    var input = form.querySelector('input[type="email"]');
+    var field = form.querySelector(".field");
+    var isInline = form.classList.contains("lead-form--inline");
+    clearFieldError(form);
+    if (isInline) {
+      setFormError(form, DUPLICATE_EMAIL_ERROR);
+      if (field) {
+        field.classList.add("is-error");
+      }
+      if (input) {
+        input.setAttribute("aria-invalid", "true");
+      }
+    } else {
+      setFieldError(form, DUPLICATE_EMAIL_ERROR);
+    }
+    if (input) {
+      input.focus();
+    }
+  }
 
   var HS_PORTAL = "";
   var HS_FORM = "";
@@ -222,9 +334,12 @@
     });
   }
 
-  function showSuccess(card) {
+  function showSuccess(card, email) {
     var form = card.querySelector("[data-lead-form]");
     var success = card.querySelector("[data-lead-success]");
+    if (email) {
+      rememberEmail(email);
+    }
     if (form) {
       form.hidden = true;
     }
@@ -252,15 +367,11 @@
   }
 
   function validate(form) {
-    var field = form.querySelector(".field");
-    var input = form.querySelector('input[type="email"]');
-    var error = form.querySelector("[data-error]");
-    var value = (input.value || "").trim();
+    var value = getEmailValue(form);
     var ok = EMAIL_RE.test(value);
-    field.classList.toggle("is-error", !ok);
-    input.setAttribute("aria-invalid", ok ? "false" : "true");
-    if (error) {
-      error.hidden = ok;
+    clearFieldError(form);
+    if (!ok) {
+      setFieldError(form, DEFAULT_EMAIL_ERROR);
     }
     return ok;
   }
@@ -269,6 +380,7 @@
     var input = form.querySelector('input[type="email"]');
     if (input) {
       input.addEventListener("input", function () {
+        clearFormError(form);
         if (form.querySelector(".field").classList.contains("is-error")) {
           validate(form);
         }
@@ -282,12 +394,18 @@
         return;
       }
 
+      var email = getEmailValue(form);
+      if (isDuplicateEmail(email)) {
+        showDuplicateError(form);
+        return;
+      }
+
       var card = form.closest("[data-form-card]");
       setLoading(form, true);
 
       window.setTimeout(function () {
         setLoading(form, false);
-        showSuccess(card);
+        showSuccess(card, email);
       }, 650);
     });
   });

@@ -260,11 +260,12 @@
               <p class="lead-form__note">
                 <span class="lead-form__star">*</span>Try FinOps for AI free for 30 days.
               </p>
+              <p class="lead-form__alert" data-form-error hidden role="alert"></p>
             </form>
             <div class="lead-success" data-lead-success hidden role="status" aria-live="polite">
               <img
                 class="lead-success__icon"
-                src="assets/images/success-tick-solution.png"
+                src="assets/icons/success-tick.svg"
                 alt=""
                 width="118"
                 height="118"
@@ -859,14 +860,40 @@
       <div class="footer-cta__inner">
         <div class="footer-cta__copy reveal">
           <div class="footer-cta__title-wrap">
-            <img
+            <svg
               class="footer-cta__ring"
-              src="assets/images/oval-line-travel.svg"
-              alt=""
               width="222"
               height="83"
+              viewBox="0 0 225.297 86.1704"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
               aria-hidden="true"
-            />
+            >
+              <path
+                class="footer-cta__ring-track"
+                d="M28.5751 14.6272C-20.7843 35.8572 8.61574 68.2785 28.5744 75.694C56.9177 86.2246 143.839 89.0191 181.339 75.694C249.208 51.5781 219.92 23.4289 200.84 14.627C164.839 -1.98052 71.3394 -3.76611 28.6751 14.6772"
+                pathLength="1"
+              />
+              <path
+                class="footer-cta__ring-path"
+                d="M28.5751 14.6272C-20.7843 35.8572 8.61574 68.2785 28.5744 75.694C56.9177 86.2246 143.839 89.0191 181.339 75.694C249.208 51.5781 219.92 23.4289 200.84 14.627C164.839 -1.98052 71.3394 -3.76611 28.6751 14.6772"
+                pathLength="1"
+              />
+              <defs>
+                <linearGradient
+                  id="footer-cta-ring-gradient"
+                  x1="1.49978"
+                  y1="60.3109"
+                  x2="40.1032"
+                  y2="-42.8678"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#17A5FB" />
+                  <stop offset="0.5" stop-color="#9A4BFF" />
+                  <stop offset="1" stop-color="#ED0082" />
+                </linearGradient>
+              </defs>
+            </svg>
             <h2 class="footer-cta__title">See What You Could Save on AI</h2>
           </div>
           <p>
@@ -903,16 +930,23 @@
                 />
               </span>
             </button>
+            <p class="lead-form__alert" data-form-error hidden role="alert"></p>
           </form>
-          <div class="lead-success lead-success--compact" data-lead-success hidden role="status" aria-live="polite">
+          <div class="lead-success lead-success--footer" data-lead-success hidden role="status" aria-live="polite">
             <img
               class="lead-success__icon"
-              src="assets/images/success-tick-solution.png"
+              src="assets/icons/success-tick.svg"
               alt=""
-              width="48"
-              height="48"
+              width="118"
+              height="118"
             />
-            <h3 class="lead-success__title">Demo Booked!</h3>
+            <div class="lead-success__copy">
+              <h3 class="lead-success__title">Demo Booked!</h3>
+              <p class="lead-success__body">
+                Thanks for your interest in FinOps for AI.<br />
+                A confirmation is on its way to your inbox.
+              </p>
+            </div>
           </div>
           <div id="hs-form-footer" class="hs-mount hs-mount--footer" hidden></div>
         </div>
