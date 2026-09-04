@@ -1,5 +1,5 @@
 /**
- * FinOps for AI LP — nav, tabs, forms, HubSpot stub, reveals, confetti.
+ * FinOps for AI LP — nav, tabs, forms, HubSpot lead API, reveals, confetti.
  */
 (function () {
   var header = document.getElementById("site-header");
@@ -200,42 +200,17 @@
 
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   var DEFAULT_EMAIL_ERROR = "Enter a valid work email.";
-  var DUPLICATE_EMAIL_ERROR = "You've already booked a demo with this email.";
-
-  var submittedEmails = (function loadSubmittedEmails() {
-    var set = new Set();
-    try {
-      var raw = window.sessionStorage.getItem("finops-demo-emails");
-      if (raw) {
-        JSON.parse(raw).forEach(function (email) {
-          set.add(String(email).toLowerCase());
-        });
-      }
-    } catch (err) {
-      /* ignore storage errors */
-    }
-    return set;
-  })();
-
-  function persistSubmittedEmails() {
-    try {
-      window.sessionStorage.setItem(
-        "finops-demo-emails",
-        JSON.stringify(Array.from(submittedEmails))
-      );
-    } catch (err) {
-      /* ignore storage errors */
-    }
-  }
-
-  function rememberEmail(email) {
-    submittedEmails.add(email.toLowerCase());
-    persistSubmittedEmails();
-  }
-
-  function isDuplicateEmail(email) {
-    return submittedEmails.has(email.toLowerCase());
-  }
+  var DUPLICATE_EMAIL_ERROR =
+    "This email ID is already registered. Please use another one.";
+  var GENERIC_EMAIL_ERROR = "Something went wrong. Please try again.";
+  var LEAD_API = "/api/lead";
+  var HS_PORTAL = "47057450";
+  var HS_FORM = "9c9163c2-6f41-4369-bac9-8f4668c93889";
+  var HS_SUBMIT =
+    "https://api.hsforms.com/submissions/v3/integration/submit/" +
+    HS_PORTAL +
+    "/" +
+    HS_FORM;
 
   function getEmailValue(form) {
     var input = form.querySelector('input[type="email"]');
@@ -312,9 +287,96 @@
     }
   }
 
-  var HS_PORTAL = "";
-  var HS_FORM = "";
-  var HS_REGION = "na1";
+  function getHutk() {
+    var match = document.cookie.match(/(?:^|; )hubspotutk=([^;]*)/);
+    return match ? decodeURIComponent(match[1]) : "";
+  }
+
+  function leadPayload(email, form) {
+    var source = (form && form.getAttribute("data-lead-source")) || "hero";
+    return {
+      email: email,
+      pageUri: window.location.href.split("#")[0] + (source === "footer" ? "#footer-cta" : "#hero"),
+      pageName: document.title + " — " + source,
+      hutk: getHutk(),
+    };
+  }
+
+  function isApiUnavailable(res) {
+    return res.status === 404 || res.status === 501 || res.status === 503;
+  }
+
+  function submitHubSpotDirect(email, form) {
+    var payload = leadPayload(email, form);
+    var context = {};
+    if (payload.pageUri) {
+      context.pageUri = payload.pageUri;
+    }
+    if (payload.pageName) {
+      context.pageName = payload.pageName;
+    }
+    if (payload.hutk) {
+      context.hutk = payload.hutk;
+    }
+
+    return fetch(HS_SUBMIT, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fields: [{ objectTypeId: "0-1", name: "email", value: email }],
+        context: context,
+      }),
+    }).then(function (res) {
+      if (!res.ok) {
+        return { ok: false, message: GENERIC_EMAIL_ERROR };
+      }
+      return { ok: true };
+    });
+  }
+
+  function submitLead(email, form) {
+    var payload = leadPayload(email, form);
+
+    return fetch(LEAD_API, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(function (res) {
+        var type = (res.headers.get("content-type") || "").toLowerCase();
+        if (!type.includes("application/json")) {
+          if (isApiUnavailable(res) || !res.ok) {
+            return submitHubSpotDirect(email, form);
+          }
+          return { ok: false, message: GENERIC_EMAIL_ERROR };
+        }
+
+        return res.json().then(function (data) {
+          if (res.status === 409 || data.registered) {
+            return { registered: true };
+          }
+          if (res.ok) {
+            return { ok: true };
+          }
+          if (isApiUnavailable(res)) {
+            return submitHubSpotDirect(email, form);
+          }
+          return {
+            ok: false,
+            message: data.message || GENERIC_EMAIL_ERROR,
+          };
+        });
+      })
+      .catch(function () {
+        return submitHubSpotDirect(email, form);
+      });
+  }
 
   function burstConfetti(card) {
     if (reduceMotion || typeof confetti !== "function") {
@@ -334,12 +396,9 @@
     });
   }
 
-  function showSuccess(card, email) {
+  function showSuccess(card) {
     var form = card.querySelector("[data-lead-form]");
     var success = card.querySelector("[data-lead-success]");
-    if (email) {
-      rememberEmail(email);
-    }
     if (form) {
       form.hidden = true;
     }
@@ -395,116 +454,36 @@
       }
 
       var email = getEmailValue(form);
-      if (isDuplicateEmail(email)) {
-        showDuplicateError(form);
-        return;
-      }
-
       var card = form.closest("[data-form-card]");
       setLoading(form, true);
 
-      window.setTimeout(function () {
-        setLoading(form, false);
-        showSuccess(card, email);
-      }, 650);
+      submitLead(email, form)
+        .then(function (result) {
+          setLoading(form, false);
+          if (result.registered) {
+            showDuplicateError(form);
+            return;
+          }
+          if (result.ok) {
+            showSuccess(card);
+            return;
+          }
+          if (form.classList.contains("lead-form--inline")) {
+            setFormError(form, result.message || GENERIC_EMAIL_ERROR);
+          } else {
+            setFieldError(form, result.message || GENERIC_EMAIL_ERROR);
+          }
+        })
+        .catch(function () {
+          setLoading(form, false);
+          if (form.classList.contains("lead-form--inline")) {
+            setFormError(form, GENERIC_EMAIL_ERROR);
+          } else {
+            setFieldError(form, GENERIC_EMAIL_ERROR);
+          }
+        });
     });
   });
-
-  function formRoot($form) {
-    if (!$form) {
-      return null;
-    }
-    return $form.jquery ? $form.get(0) : $form;
-  }
-
-  function mountHubSpotForms() {
-    if (!HS_PORTAL || !HS_FORM || !window.hbspt || !window.hbspt.forms) {
-      return;
-    }
-
-    function create(target, instanceId) {
-      if (!document.querySelector(target)) {
-        return;
-      }
-      window.hbspt.forms.create({
-        region: HS_REGION,
-        portalId: HS_PORTAL,
-        formId: HS_FORM,
-        target: target,
-        css: "",
-        cssClass: "hs-form-finops",
-        formInstanceId: instanceId,
-        submitButtonClass: "cta cta--block",
-        onFormSubmit: function ($form) {
-          var root = formRoot($form);
-          var native = root && root.closest("[data-lead-form]");
-          if (native) {
-            setLoading(native, true);
-          }
-        },
-        onFormSubmitted: function ($form) {
-          var root = formRoot($form);
-          var card = root && root.closest("[data-form-card]");
-          if (card) {
-            showSuccess(card);
-          }
-        },
-      });
-      var mount = document.querySelector(target);
-      if (mount) {
-        mount.hidden = false;
-        decorateCtaButtons(mount);
-        var native = mount.parentElement.querySelector("[data-lead-form]");
-        if (native) {
-          native.hidden = true;
-        }
-      }
-    }
-
-    create("#hs-form-hero", "hero");
-    create("#hs-form-footer", "footer");
-  }
-
-  function whenHubSpotReady(done) {
-    if (window.hbspt && window.hbspt.forms) {
-      done();
-      return;
-    }
-    var tries = 0;
-    var timer = window.setInterval(function () {
-      tries += 1;
-      if (window.hbspt && window.hbspt.forms) {
-        window.clearInterval(timer);
-        done();
-      } else if (tries > 50) {
-        window.clearInterval(timer);
-      }
-    }, 100);
-  }
-
-  function loadHubSpotEmbed(done) {
-    if (window.hbspt && window.hbspt.forms) {
-      done();
-      return;
-    }
-    if (document.getElementById("hs-embed-script")) {
-      whenHubSpotReady(done);
-      return;
-    }
-    var script = document.createElement("script");
-    script.id = "hs-embed-script";
-    script.src = "https://js.hsforms.net/forms/embed/v2.js";
-    script.async = true;
-    script.charset = "utf-8";
-    script.onload = function () {
-      whenHubSpotReady(done);
-    };
-    document.head.appendChild(script);
-  }
-
-  if (HS_PORTAL && HS_FORM) {
-    loadHubSpotEmbed(mountHubSpotForms);
-  }
 
   function initJourneySteps() {
     var list = document.querySelector("[data-journey-steps]");
@@ -625,6 +604,15 @@
   var REPORT_PDF_SIZE_ERROR = "PDF must be 10MB or smaller.";
   var REPORT_PDF_TYPE_ERROR = "Please upload a PDF file.";
   var REPORT_PDF_REQUIRED_ERROR = "Upload a PDF up to 10MB.";
+  var REPORT_SUBMIT_ERROR = "Something went wrong. Please try again.";
+  var REPORT_HS_PORTAL = "47057450";
+  var REPORT_HS_FORM = "a6b8fd7b-c8a3-447c-a914-8fc32cf6e2ab";
+  var REPORT_HS_REGION = "na1";
+  var reportHsReady = false;
+  var reportHsMounting = false;
+  var reportHsFormEl = null;
+  var reportHsPendingSend = null;
+  var reportHsWatchTimer = null;
 
   function isPdfFile(file) {
     if (!file) {
@@ -712,6 +700,214 @@
     }
   }
 
+  function setReportSubmitError(message) {
+    var err = reportModal && reportModal.querySelector("[data-report-submit-error]");
+    if (!err) {
+      return;
+    }
+    if (message) {
+      err.textContent = message;
+      err.hidden = false;
+    } else {
+      err.textContent = "";
+      err.hidden = true;
+    }
+  }
+
+  function setReportSubmitting(loading) {
+    var form = reportModal && reportModal.querySelector("[data-report-form]");
+    var submit = form && form.querySelector("[data-report-submit]");
+    if (!submit) {
+      return;
+    }
+    submit.disabled = loading;
+    submit.textContent = loading ? "Submitting…" : "Submit";
+  }
+
+  function formRoot($form) {
+    if (!$form) {
+      return null;
+    }
+    return $form.jquery ? $form.get(0) : $form;
+  }
+
+  function whenHubSpotReady(done) {
+    if (window.hbspt && window.hbspt.forms) {
+      done();
+      return;
+    }
+    var tries = 0;
+    var timer = window.setInterval(function () {
+      tries += 1;
+      if (window.hbspt && window.hbspt.forms) {
+        window.clearInterval(timer);
+        done();
+      } else if (tries > 50) {
+        window.clearInterval(timer);
+      }
+    }, 100);
+  }
+
+  function loadHubSpotEmbed(done) {
+    if (window.hbspt && window.hbspt.forms) {
+      done();
+      return;
+    }
+    if (document.getElementById("hs-embed-script")) {
+      whenHubSpotReady(done);
+      return;
+    }
+    var script = document.createElement("script");
+    script.id = "hs-embed-script";
+    script.src = "https://js.hsforms.net/forms/embed/v2.js";
+    script.async = true;
+    script.charset = "utf-8";
+    script.onload = function () {
+      whenHubSpotReady(done);
+    };
+    script.onerror = function () {
+      reportHsMounting = false;
+    };
+    document.head.appendChild(script);
+  }
+
+  function clearReportHubSpotFields() {
+    if (!reportHsFormEl) {
+      return;
+    }
+    var emailInput = reportHsFormEl.querySelector('input[name="email"]');
+    var fileInput = reportHsFormEl.querySelector('input[type="file"]');
+    if (emailInput) {
+      emailInput.value = "";
+    }
+    if (fileInput) {
+      fileInput.value = "";
+    }
+  }
+
+  function remountReportHubSpotForm() {
+    reportHsReady = false;
+    reportHsFormEl = null;
+    var mount = document.getElementById("hs-form-report");
+    if (mount) {
+      mount.innerHTML = "";
+    }
+    mountReportHubSpotForm();
+  }
+
+  function mountReportHubSpotForm() {
+    if (reportHsReady || reportHsMounting) {
+      return;
+    }
+    if (!document.getElementById("hs-form-report")) {
+      return;
+    }
+    reportHsMounting = true;
+    loadHubSpotEmbed(function () {
+      if (!window.hbspt || !window.hbspt.forms) {
+        reportHsMounting = false;
+        return;
+      }
+      window.hbspt.forms.create({
+        region: REPORT_HS_REGION,
+        portalId: REPORT_HS_PORTAL,
+        formId: REPORT_HS_FORM,
+        target: "#hs-form-report",
+        css: "",
+        cssClass: "hs-form-report",
+        formInstanceId: "report",
+        onFormReady: function ($form) {
+          reportHsFormEl = formRoot($form);
+          reportHsReady = true;
+          reportHsMounting = false;
+          if (reportHsPendingSend) {
+            var send = reportHsPendingSend;
+            reportHsPendingSend = null;
+            send();
+          }
+        },
+        onFormSubmitted: function () {
+          if (reportHsWatchTimer) {
+            window.clearTimeout(reportHsWatchTimer);
+            reportHsWatchTimer = null;
+          }
+          setReportSubmitting(false);
+          showReportSuccessState();
+          remountReportHubSpotForm();
+        },
+      });
+    });
+  }
+
+  function fillReportHubSpotForm(email, file) {
+    var hs = reportHsFormEl;
+    if (!hs) {
+      return false;
+    }
+    var emailInput = hs.querySelector('input[name="email"]');
+    var fileInput = hs.querySelector('input[type="file"]');
+    if (emailInput) {
+      emailInput.value = email;
+      emailInput.dispatchEvent(new Event("input", { bubbles: true }));
+      emailInput.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+    if (file && fileInput && typeof DataTransfer === "function") {
+      var data = new DataTransfer();
+      data.items.add(file);
+      fileInput.files = data.files;
+      fileInput.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+    return true;
+  }
+
+  function clickReportHubSpotSubmit() {
+    var hs = reportHsFormEl;
+    if (!hs) {
+      return false;
+    }
+    var btn = hs.querySelector('input[type="submit"], button[type="submit"], .hs-button');
+    if (btn) {
+      btn.click();
+      return true;
+    }
+    var native = hs.tagName === "FORM" ? hs : hs.querySelector("form");
+    if (native && typeof native.requestSubmit === "function") {
+      native.requestSubmit();
+      return true;
+    }
+    return false;
+  }
+
+  function submitReportToHubSpot(email, file, onFail) {
+    function send() {
+      if (!fillReportHubSpotForm(email, file) || !clickReportHubSpotSubmit()) {
+        onFail();
+        return;
+      }
+      if (reportHsWatchTimer) {
+        window.clearTimeout(reportHsWatchTimer);
+      }
+      reportHsWatchTimer = window.setTimeout(function () {
+        reportHsWatchTimer = null;
+        onFail();
+      }, 12000);
+    }
+
+    if (reportHsReady && reportHsFormEl) {
+      send();
+      return;
+    }
+
+    reportHsPendingSend = send;
+    mountReportHubSpotForm();
+    window.setTimeout(function () {
+      if (!reportHsReady && reportHsPendingSend === send) {
+        reportHsPendingSend = null;
+        onFail();
+      }
+    }, 8000);
+  }
+
   /* Visibility is class-driven (.is-success). Do not use [hidden] on form/success —
      global [hidden]{display:none!important} fights the success layout. */
   function showReportFormState() {
@@ -748,6 +944,7 @@
 
     showReportFormState();
     reportSelectedFile = null;
+    clearReportHubSpotFields();
 
     if (form) {
       form.reset();
@@ -766,6 +963,11 @@
       submit.disabled = false;
       submit.textContent = "Submit";
     }
+    var submitError = reportModal && reportModal.querySelector("[data-report-submit-error]");
+    if (submitError) {
+      submitError.hidden = true;
+      submitError.textContent = "";
+    }
   }
 
   function openReportModal() {
@@ -780,6 +982,7 @@
     reportModal.classList.add("is-open");
     reportModal.setAttribute("aria-hidden", "false");
     document.body.classList.add("report-modal-open");
+    mountReportHubSpotForm();
 
     var emailInput = reportModal.querySelector('input[type="email"]');
     if (emailInput) {
@@ -917,9 +1120,21 @@
           submit.disabled = true;
           submit.textContent = "Submitting…";
         }
+        setReportSubmitError("");
 
-        /* Keep popup open; swap form view → success view in place */
-        showReportSuccessState();
+        var emailInput = form.querySelector('input[type="email"]');
+        var email = emailInput ? (emailInput.value || "").trim() : "";
+        var file =
+          reportSelectedFile ||
+          (fileInput && fileInput.files && fileInput.files[0]);
+
+        submitReportToHubSpot(email, file, function () {
+          if (!reportModalOpen || reportModal.classList.contains("is-success")) {
+            return;
+          }
+          setReportSubmitting(false);
+          setReportSubmitError(REPORT_SUBMIT_ERROR);
+        });
       });
     }
   }

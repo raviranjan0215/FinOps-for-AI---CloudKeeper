@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="css/style.css" />
 
     <link rel="preconnect" href="https://js.hsforms.net" crossorigin />
-    <link rel="preconnect" href="https://forms-na1.hsforms.com" crossorigin />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 
     <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32" />
@@ -241,7 +240,7 @@
             </svg>
             <div class="lead-card" data-form-card>
             <canvas class="lead-card__confetti" data-confetti-canvas aria-hidden="true"></canvas>
-            <form class="lead-form" data-lead-form novalidate>
+            <form class="lead-form" data-lead-form data-lead-source="hero" novalidate>
               <h2 class="lead-form__title">See What You Could Save on AI Spend</h2>
               <label class="field">
                 <span class="visually-hidden">Work email</span>
@@ -434,9 +433,9 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">AI inference</p>
-                    <div class="offer-card__icon" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/layers.svg" alt="" width="46" height="46" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/layers.svg" alt="" width="46" height="46" />
+                    <div class="offer-card__icon" style="--iw: 29px; --ih: 29px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/inference.svg" alt="" width="29" height="29" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/inference.svg" alt="" width="29" height="29" />
                     </div>
                   </div>
                   <p class="offer-card__desc">See inference spend across models, workloads, providers, and applications.</p>
@@ -470,9 +469,9 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">GPU utilization insights</p>
-                    <div class="offer-card__icon offer-card__icon--32" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
+                    <div class="offer-card__icon" style="--iw: 36px; --ih: 36px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/gpu-utilization.svg" alt="" width="36" height="36" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/gpu-utilization.svg" alt="" width="36" height="36" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Uncover GPU underutilization and wasted capacity.</p>
@@ -494,14 +493,14 @@
           </div>
 
           <div class="offer-panel" data-panel="rate" role="tabpanel" hidden>
-            <ul class="offer-grid">
+            <ul class="offer-grid offer-grid--rate">
               <li class="offer-card">
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">AI commitments management</p>
-                    <div class="offer-card__icon offer-card__icon--26" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/key.svg" alt="" width="26" height="26" />
-                      <img class="offer-card__icon-hover" src="assets/icons/offerings/key-hover.svg" alt="" width="26" height="26" />
+                    <div class="offer-card__icon" style="--iw: 27px; --ih: 24px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/handshake.svg" alt="" width="27" height="24" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/handshake.svg" alt="" width="27" height="24" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Optimize AI commitments to secure better rates.</p>
@@ -511,9 +510,9 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">Enterprise AI billing</p>
-                    <div class="offer-card__icon offer-card__icon--38" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/billing.svg" alt="" width="38" height="38" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/billing.svg" alt="" width="38" height="38" />
+                    <div class="offer-card__icon" style="--iw: 28px; --ih: 35px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/pricing.svg" alt="" width="28" height="35" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pricing.svg" alt="" width="28" height="35" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Centralized billing and cost visibility.</p>
@@ -523,9 +522,9 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">Claude access &amp; procurement</p>
-                    <div class="offer-card__icon offer-card__icon--36" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/pct.svg" alt="" width="36" height="36" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pct.svg" alt="" width="36" height="36" />
+                    <div class="offer-card__icon" style="--iw: 28px; --ih: 27px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/access.svg" alt="" width="28" height="27" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/access.svg" alt="" width="28" height="27" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Access Claude models through optimized pricing and purchasing models.</p>
@@ -535,9 +534,9 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">Cost-efficient pricing</p>
-                    <div class="offer-card__icon offer-card__icon--28" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/pie.svg" alt="" width="28" height="28" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pie.svg" alt="" width="28" height="28" />
+                    <div class="offer-card__icon" style="--iw: 28px; --ih: 35px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/pricing.svg" alt="" width="28" height="35" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pricing.svg" alt="" width="28" height="35" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Identify the most cost-effective pricing options for your AI workloads.</p>
@@ -547,24 +546,12 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">Spend optimization</p>
-                    <div class="offer-card__icon offer-card__icon--32" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
+                    <div class="offer-card__icon" style="--iw: 26px; --ih: 36px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/spend.svg" alt="" width="26" height="36" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/spend.svg" alt="" width="26" height="36" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Continuously identify opportunities to reduce AI spending.</p>
-                </div>
-              </li>
-              <li class="offer-card">
-                <div class="offer-card__body">
-                  <div class="offer-card__row">
-                    <p class="offer-card__title">Unified multi-cloud dashboard</p>
-                    <div class="offer-card__icon offer-card__icon--cloud" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/cloud.svg" alt="" width="30" height="32" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/cloud.svg" alt="" width="30" height="32" />
-                    </div>
-                  </div>
-                  <p class="offer-card__desc">Get a single view of AI/LLM costs and usage across AWS, Azure, and GCP.</p>
                 </div>
               </li>
             </ul>
@@ -576,9 +563,9 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">GPU rightsizing</p>
-                    <div class="offer-card__icon offer-card__icon--26" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/key.svg" alt="" width="26" height="26" />
-                      <img class="offer-card__icon-hover" src="assets/icons/offerings/key-hover.svg" alt="" width="26" height="26" />
+                    <div class="offer-card__icon" style="--iw: 24px; --ih: 24px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/gpu-rightsizing.svg" alt="" width="24" height="24" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/gpu-rightsizing.svg" alt="" width="24" height="24" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Match GPU capacity to actual workload requirements.</p>
@@ -588,9 +575,9 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">Infrastructure optimization</p>
-                    <div class="offer-card__icon offer-card__icon--38" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/billing.svg" alt="" width="38" height="38" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/billing.svg" alt="" width="38" height="38" />
+                    <div class="offer-card__icon" style="--iw: 24px; --ih: 22px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/infra-opt.svg" alt="" width="24" height="22" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/infra-opt.svg" alt="" width="24" height="22" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Optimize the cloud infrastructure supporting AI workloads.</p>
@@ -600,9 +587,9 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">Workload optimization</p>
-                    <div class="offer-card__icon offer-card__icon--36" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/pct.svg" alt="" width="36" height="36" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pct.svg" alt="" width="36" height="36" />
+                    <div class="offer-card__icon" style="--iw: 26px; --ih: 22px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/workload.svg" alt="" width="26" height="22" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/workload.svg" alt="" width="26" height="22" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Identify and eliminate inefficient AI workload patterns.</p>
@@ -612,9 +599,9 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">Bedrock optimization</p>
-                    <div class="offer-card__icon offer-card__icon--28" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/pie.svg" alt="" width="28" height="28" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/pie.svg" alt="" width="28" height="28" />
+                    <div class="offer-card__icon" style="--iw: 26px; --ih: 20px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/bedrock.svg" alt="" width="26" height="20" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/bedrock.svg" alt="" width="26" height="20" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Optimize Amazon Bedrock usage, configuration, and workloads.</p>
@@ -624,9 +611,9 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">Resource utilization insights</p>
-                    <div class="offer-card__icon offer-card__icon--32" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/gpu.svg" alt="" width="32" height="32" />
+                    <div class="offer-card__icon" style="--iw: 32px; --ih: 32px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/resource.svg" alt="" width="32" height="32" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/resource.svg" alt="" width="32" height="32" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Identify underutilized resources and unused capacity.</p>
@@ -636,9 +623,9 @@
                 <div class="offer-card__body">
                   <div class="offer-card__row">
                     <p class="offer-card__title">Forward Deployed Engineers (FDE)</p>
-                    <div class="offer-card__icon offer-card__icon--cloud" aria-hidden="true">
-                      <img class="offer-card__icon-default" src="assets/icons/offerings/cloud.svg" alt="" width="30" height="32" />
-                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/cloud.svg" alt="" width="30" height="32" />
+                    <div class="offer-card__icon" style="--iw: 30px; --ih: 28px" aria-hidden="true">
+                      <img class="offer-card__icon-default" src="assets/icons/offerings/fde.svg" alt="" width="30" height="28" />
+                      <img class="offer-card__icon-hover offer-card__icon-hover--tint" src="assets/icons/offerings/fde.svg" alt="" width="30" height="28" />
                     </div>
                   </div>
                   <p class="offer-card__desc">Get hands-on expertise for AI/LLM cost and performance optimization.</p>
@@ -933,7 +920,7 @@
 
         <div class="footer-cta__form lead-card lead-card--inline" data-form-card>
           <canvas class="lead-card__confetti" data-confetti-canvas aria-hidden="true"></canvas>
-          <form class="lead-form lead-form--inline" data-lead-form novalidate>
+          <form class="lead-form lead-form--inline" data-lead-form data-lead-source="footer" novalidate>
             <label class="field">
               <span class="visually-hidden">Work email</span>
               <input
@@ -1064,6 +1051,7 @@
               </div>
 
               <button class="report-modal__submit" type="submit" data-report-submit>Submit</button>
+              <p class="report-modal__submit-error" data-report-submit-error hidden></p>
             </form>
 
             <p class="report-modal__legal">
@@ -1102,6 +1090,8 @@
         </div>
       </div>
     </div>
+
+    <div id="hs-form-report" class="hs-mount hs-mount--report" aria-hidden="true"></div>
 
     <footer class="footer">
       <div class="footer__inner">

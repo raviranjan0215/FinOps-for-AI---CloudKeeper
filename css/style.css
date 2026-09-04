@@ -292,8 +292,10 @@ p {
 
 .field__error {
   display: none;
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 13px;
+  line-height: 1.4;
+  text-align: left;
   color: var(--color-error);
 }
 
@@ -972,12 +974,14 @@ p {
 }
 
 .offer-card {
+  height: 200px;
   min-height: 200px;
   padding: 40px 30px 30px;
   border-right: 1px solid #f0f0f0;
   border-bottom: 1px solid #f0f0f0;
   text-align: left;
   background: #fbfbfb;
+  overflow: hidden;
   transition: background var(--offer-ease);
 }
 
@@ -989,13 +993,29 @@ p {
   border-bottom: 0;
 }
 
+.offer-grid--rate {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.offer-grid--rate .offer-card {
+  grid-column: span 2;
+}
+
+.offer-grid--rate .offer-card:nth-child(4) {
+  grid-column: 2 / 4;
+  border-left: 1px solid #f0f0f0;
+}
+
+.offer-grid--rate .offer-card:nth-child(5) {
+  grid-column: 4 / 6;
+}
+
 .offer-card__body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 130px;
+  min-height: 0;
   gap: 0;
-  transition: gap var(--offer-ease);
 }
 
 .offer-card__row {
@@ -1005,11 +1025,11 @@ p {
   gap: 16px;
   flex: 1 1 auto;
   width: 100%;
-  border-bottom: 1px solid transparent;
-  padding-bottom: 0;
+  min-height: 0;
+  border-bottom: 1px dashed transparent;
+  padding-bottom: 10px;
   transition:
     border-color var(--offer-ease),
-    padding-bottom var(--offer-ease),
     flex-grow var(--offer-ease);
 }
 
@@ -1041,8 +1061,8 @@ p {
 
 .offer-card__icon-default,
 .offer-card__icon-hover {
-  width: 100%;
-  height: 100%;
+  width: var(--iw, 100%);
+  height: var(--ih, 100%);
   transition: opacity var(--offer-ease);
 }
 
@@ -1101,12 +1121,12 @@ p {
   line-height: 1.5;
   color: var(--color-text);
   margin: 0;
+  flex: 0 1 0;
+  min-height: 0;
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  transition:
-    max-height var(--offer-ease),
-    opacity var(--offer-ease);
+  transition: opacity var(--offer-ease);
 }
 
 @media (hover: hover) {
@@ -1115,15 +1135,9 @@ p {
     z-index: 1;
   }
 
-  .offer-card:hover .offer-card__body {
-    gap: 30px;
-  }
-
   .offer-card:hover .offer-card__row {
     flex-grow: 0;
     border-bottom-color: var(--color-primary);
-    border-bottom-style: dashed;
-    padding-bottom: 10px;
   }
 
   .offer-card:hover .offer-card__icon {
@@ -1139,8 +1153,11 @@ p {
   }
 
   .offer-card:hover .offer-card__desc:not(:empty) {
-    max-height: 120px;
+    flex: 1 1 auto;
+    max-height: none;
     opacity: 1;
+    margin-top: 12px;
+    overflow: visible;
   }
 }
 
@@ -1779,6 +1796,30 @@ p {
     border-bottom: 0;
   }
 
+  .offer-grid--rate {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .offer-grid--rate .offer-card {
+    grid-column: auto;
+  }
+
+  .offer-grid--rate .offer-card:nth-child(4) {
+    grid-column: auto;
+    border-left: 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .offer-grid--rate .offer-card:nth-child(5) {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 50%;
+    justify-self: center;
+    border-left: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
+    border-bottom: 0;
+  }
+
   .logo-cloud {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -1966,6 +2007,22 @@ p {
 
   .offer-card {
     border-right: 0 !important;
+  }
+
+  .offer-grid--rate {
+    grid-template-columns: 1fr;
+  }
+
+  .offer-grid--rate .offer-card:nth-child(4),
+  .offer-grid--rate .offer-card:nth-child(5) {
+    grid-column: auto;
+    max-width: none;
+    width: auto;
+    border-left: 0;
+  }
+
+  .offer-grid--rate .offer-card:nth-child(4) {
+    border-bottom: 1px solid #f0f0f0;
   }
 
   .journey__step {
@@ -2407,6 +2464,32 @@ p {
 .report-modal__submit:disabled {
   opacity: 0.7;
   cursor: wait;
+}
+
+.report-modal__submit-error {
+  display: none;
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--color-error);
+}
+
+.report-modal__submit-error:not([hidden]) {
+  display: block;
+}
+
+.hs-mount--report {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  pointer-events: none;
 }
 
 .report-modal__legal {
