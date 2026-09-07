@@ -202,9 +202,15 @@
   var DEFAULT_EMAIL_ERROR = "Enter a valid work email.";
   var DUPLICATE_EMAIL_ERROR =
     "This email ID is already registered. Please use another one.";
+  var ALREADY_BOOKED_ERROR = "You've already booked a demo.";
   var GENERIC_EMAIL_ERROR = "Something went wrong. Please try again.";
   var LEAD_API = "/api/lead";
   var LEAD_EMAILS_KEY = "finops-demo-emails";
+  var LEAD_EMAILS_COOKIE = "finops-demo-emails";
+  var LEAD_BOOKED_KEY = "finops-demo-booked";
+  var rememberedEmails = {};
+  var pendingEmails = {};
+  var demoBooked = false;
   var HS_PORTAL = "47057450";
   var HS_FORM = "9c9163c2-6f41-4369-bac9-8f4668c93889";
   var HS_SUBMIT =
@@ -267,25 +273,36 @@
     clearFormError(form);
   }
 
-  function showDuplicateError(form) {
+  function showDuplicateError(form, message, silent) {
     var input = form.querySelector('input[type="email"]');
-    var field = form.querySelector(".field");
-    var isInline = form.classList.contains("lead-form--inline");
-    clearFieldError(form);
-    if (isInline) {
-      setFormError(form, DUPLICATE_EMAIL_ERROR);
-      if (field) {
-        field.classList.add("is-error");
-      }
-      if (input) {
-        input.setAttribute("aria-invalid", "true");
-      }
-    } else {
-      setFieldError(form, DUPLICATE_EMAIL_ERROR);
-    }
-    if (input) {
+    setFieldError(form, message || DUPLICATE_EMAIL_ERROR);
+    if (!silent && input) {
       input.focus();
     }
+  }
+
+  function lockOtherLeadForms(sourceForm, email) {
+    document.querySelectorAll("[data-lead-form]").forEach(function (form) {
+      if (form === sourceForm || form.hidden) {
+        return;
+      }
+      var otherEmail = getEmailValue(form);
+      var message =
+        otherEmail && otherEmail.toLowerCase() === String(email || "").toLowerCase()
+          ? DUPLICATE_EMAIL_ERROR
+          : ALREADY_BOOKED_ERROR;
+      showDuplicateError(form, message, true);
+    });
+  }
+
+  function leadBlockReason(email) {
+    if (isRememberedEmail(email)) {
+      return DUPLICATE_EMAIL_ERROR;
+    }
+    if (isDemoBooked()) {
+      return ALREADY_BOOKED_ERROR;
+    }
+    return "";
   }
 
   function getHutk() {
@@ -293,62 +310,135 @@
     return match ? decodeURIComponent(match[1]) : "";
   }
 
+  function addEmailsToSet(set, list) {
+    if (!list) {
+      return;
+    }
+    (Array.isArray(list) ? list : String(list).split(/[\s,]+/)).forEach(function (item) {
+      var value = String(item || "").trim().toLowerCase();
+      if (value) {
+        set[value] = true;
+      }
+    });
+  }
+
   function loadRememberedEmails() {
     var set = {};
+    Object.keys(rememberedEmails).forEach(function (email) {
+      set[email] = true;
+    });
     try {
       var raw = window.localStorage.getItem(LEAD_EMAILS_KEY);
-      var list = raw ? JSON.parse(raw) : [];
-      if (Array.isArray(list)) {
-        list.forEach(function (item) {
-          var email = String(item || "").trim().toLowerCase();
-          if (email) {
-            set[email] = true;
-          }
-        });
-      }
+      addEmailsToSet(set, raw ? JSON.parse(raw) : []);
     } catch (err) {
       /* ignore storage errors */
     }
+    try {
+      var match = document.cookie.match(/(?:^|; )finops-demo-emails=([^;]*)/);
+      if (match) {
+        addEmailsToSet(set, decodeURIComponent(match[1]));
+      }
+    } catch (err) {
+      /* ignore cookie errors */
+    }
+    rememberedEmails = set;
     return set;
   }
 
   function rememberEmail(email) {
+    var key = String(email || "").trim().toLowerCase();
+    if (!key) {
+      return;
+    }
     var set = loadRememberedEmails();
-    set[email.toLowerCase()] = true;
+    set[key] = true;
+    rememberedEmails = set;
+    var list = Object.keys(set);
     try {
-      window.localStorage.setItem(LEAD_EMAILS_KEY, JSON.stringify(Object.keys(set)));
+      window.localStorage.setItem(LEAD_EMAILS_KEY, JSON.stringify(list));
+    } catch (err) {
+      /* ignore storage errors */
+    }
+    try {
+      document.cookie =
+        LEAD_EMAILS_COOKIE +
+        "=" +
+        encodeURIComponent(list.join(" ")) +
+        "; path=/; max-age=31536000; SameSite=Lax";
+    } catch (err) {
+      /* ignore cookie errors */
+    }
+  }
+
+  function isRememberedEmail(email) {
+    var key = String(email || "").trim().toLowerCase();
+    return Boolean(key && loadRememberedEmails()[key]);
+  }
+
+  function loadDemoBooked() {
+    if (demoBooked) {
+      return true;
+    }
+    try {
+      demoBooked = window.localStorage.getItem(LEAD_BOOKED_KEY) === "1";
+    } catch (err) {
+      demoBooked = false;
+    }
+    return demoBooked;
+  }
+
+  function isDemoBooked() {
+    return loadDemoBooked();
+  }
+
+  function markDemoBooked(email) {
+    rememberEmail(email);
+    demoBooked = true;
+    try {
+      window.localStorage.setItem(LEAD_BOOKED_KEY, "1");
     } catch (err) {
       /* ignore storage errors */
     }
   }
 
-  function isRememberedEmail(email) {
-    return Boolean(loadRememberedEmails()[email.toLowerCase()]);
+  function isDuplicatePayload(data) {
+    if (!data) {
+      return false;
+    }
+    if (data.registered) {
+      return true;
+    }
+    var errors = Array.isArray(data.errors) ? data.errors : [];
+    return errors.some(function (item) {
+      var text = String((item && (item.errorType || item.message)) || "").toLowerCase();
+      return (
+        text.indexOf("already") !== -1 ||
+        text.indexOf("duplicate") !== -1 ||
+        text.indexOf("existing") !== -1
+      );
+    });
   }
 
   function isApiUnavailable(res) {
     return res.status === 404 || res.status === 405 || res.status === 500 || res.status === 501 || res.status === 502 || res.status === 503;
   }
 
-  function leadPayload(email, form) {
-    var source = (form && form.getAttribute("data-lead-source")) || "hero";
+  function leadPayload(email) {
+    var pageUri = window.location.origin + window.location.pathname;
     return {
       email: email,
-      pageUri: window.location.href.split("#")[0] + (source === "footer" ? "#footer-cta" : "#hero"),
-      pageName: document.title + " — " + source,
+      pageUri: pageUri,
+      pageName: document.title,
       hutk: getHutk(),
     };
   }
 
-  function submitHubSpotDirect(email, form) {
-    var payload = leadPayload(email, form);
-    var context = {};
-    if (payload.pageUri) {
-      context.pageUri = payload.pageUri;
-    }
-    if (payload.pageName) {
-      context.pageName = payload.pageName;
-    }
+  function submitHubSpotDirect(email) {
+    var payload = leadPayload(email);
+    var context = {
+      pageUri: payload.pageUri,
+      pageName: payload.pageName,
+    };
     if (payload.hutk) {
       context.hutk = payload.hutk;
     }
@@ -364,22 +454,37 @@
         context: context,
       }),
     }).then(function (res) {
-      if (!res.ok) {
-        return { ok: false, message: GENERIC_EMAIL_ERROR };
-      }
-      rememberEmail(email);
-      return { ok: true };
+      return res
+        .json()
+        .catch(function () {
+          return {};
+        })
+        .then(function (data) {
+          if (res.status === 409 || isDuplicatePayload(data)) {
+            rememberEmail(email);
+            return { registered: true };
+          }
+          if (!res.ok) {
+            return { ok: false, message: GENERIC_EMAIL_ERROR };
+          }
+          markDemoBooked(email);
+          return { ok: true };
+        });
     });
   }
 
-  function submitLead(email, form) {
-    if (isRememberedEmail(email)) {
-      return Promise.resolve({ registered: true });
+  function submitLead(email) {
+    var key = String(email || "").trim().toLowerCase();
+    var blocked = leadBlockReason(key);
+    if (blocked) {
+      return Promise.resolve({ registered: true, message: blocked });
+    }
+    if (pendingEmails[key]) {
+      return pendingEmails[key];
     }
 
-    var payload = leadPayload(email, form);
-
-    return fetch(LEAD_API, {
+    var payload = leadPayload(email);
+    var request = fetch(LEAD_API, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -390,20 +495,20 @@
       .then(function (res) {
         var type = (res.headers.get("content-type") || "").toLowerCase();
         if (!type.includes("application/json")) {
-          return submitHubSpotDirect(email, form);
+          return submitHubSpotDirect(email);
         }
 
         return res.json().then(function (data) {
-          if (res.status === 409 || data.registered) {
+          if (res.status === 409 || isDuplicatePayload(data)) {
             rememberEmail(email);
-            return { registered: true };
+            return { registered: true, message: data.message || DUPLICATE_EMAIL_ERROR };
           }
           if (res.ok) {
-            rememberEmail(email);
+            markDemoBooked(email);
             return { ok: true };
           }
           if (isApiUnavailable(res)) {
-            return submitHubSpotDirect(email, form);
+            return submitHubSpotDirect(email);
           }
           return {
             ok: false,
@@ -412,8 +517,15 @@
         });
       })
       .catch(function () {
-        return submitHubSpotDirect(email, form);
+        return submitHubSpotDirect(email);
+      })
+      .then(function (result) {
+        delete pendingEmails[key];
+        return result;
       });
+
+    pendingEmails[key] = request;
+    return request;
   }
 
   function burstConfetti(card) {
@@ -437,12 +549,17 @@
   function showSuccess(card) {
     var form = card.querySelector("[data-lead-form]");
     var success = card.querySelector("[data-lead-success]");
+    var email = form ? getEmailValue(form) : "";
     if (form) {
+      markDemoBooked(email);
       form.hidden = true;
     }
     if (success) {
       success.hidden = false;
       success.classList.add("is-in");
+    }
+    if (form) {
+      lockOtherLeadForms(form, email);
     }
     burstConfetti(card);
   }
@@ -473,10 +590,18 @@
     return ok;
   }
 
+  loadRememberedEmails();
+  loadDemoBooked();
+
   document.querySelectorAll("[data-lead-form]").forEach(function (form) {
     var input = form.querySelector('input[type="email"]');
     if (input) {
       input.addEventListener("input", function () {
+        var blocked = leadBlockReason(getEmailValue(form));
+        if (blocked && EMAIL_RE.test(getEmailValue(form))) {
+          showDuplicateError(form, blocked, true);
+          return;
+        }
         clearFormError(form);
         if (form.querySelector(".field").classList.contains("is-error")) {
           validate(form);
@@ -486,6 +611,9 @@
 
     form.addEventListener("submit", function (event) {
       event.preventDefault();
+      if (form.dataset.submitting === "true") {
+        return;
+      }
       if (!validate(form)) {
         form.querySelector('input[type="email"]').focus();
         return;
@@ -493,13 +621,20 @@
 
       var email = getEmailValue(form);
       var card = form.closest("[data-form-card]");
+      var blocked = leadBlockReason(email);
+      if (blocked) {
+        showDuplicateError(form, blocked);
+        return;
+      }
+      form.dataset.submitting = "true";
       setLoading(form, true);
 
-      submitLead(email, form)
+      submitLead(email)
         .then(function (result) {
+          form.dataset.submitting = "false";
           setLoading(form, false);
           if (result.registered) {
-            showDuplicateError(form);
+            showDuplicateError(form, result.message || DUPLICATE_EMAIL_ERROR);
             return;
           }
           if (result.ok) {
@@ -513,6 +648,7 @@
           }
         })
         .catch(function () {
+          form.dataset.submitting = "false";
           setLoading(form, false);
           if (form.classList.contains("lead-form--inline")) {
             setFormError(form, GENERIC_EMAIL_ERROR);
