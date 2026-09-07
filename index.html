@@ -15,6 +15,15 @@
       href="assets/fonts/roboto-latin.woff2"
       crossorigin
     />
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="assets/images/hero-bg-finl-use.webp"
+      imagesrcset="assets/images/hero-bg-finl-use-1440.webp 1440w, assets/images/hero-bg-finl-use.webp 2880w"
+      imagesizes="100vw"
+      fetchpriority="high"
+    />
     <link rel="stylesheet" href="css/style.css" />
 
     <link rel="preconnect" href="https://js.hsforms.net" crossorigin />
@@ -104,7 +113,7 @@
       <div class="header__inner">
         <a class="header__logo" href="#hero" data-scroll aria-label="CloudKeeper home">
           <img
-            src="assets/logos/cloudkeeper-white.png"
+            src="assets/logos/cloudkeeper-white.webp"
             alt="CloudKeeper"
             width="160"
             height="35"
@@ -182,10 +191,14 @@
         <div class="hero__bg" aria-hidden="true">
           <img
             class="hero__bg-img"
-            src="assets/images/hero-bg-finl-use.png"
+            src="assets/images/hero-bg-finl-use.webp"
+            srcset="assets/images/hero-bg-finl-use-1440.webp 1440w, assets/images/hero-bg-finl-use.webp 2880w"
+            sizes="100vw"
             alt=""
             width="1440"
             height="776"
+            fetchpriority="high"
+            decoding="async"
           />
         </div>
 
@@ -195,7 +208,7 @@
               <span class="hero__kicker">The full stack</span>
               <img
                 class="hero__wordmark"
-                src="assets/images/hero-wordmark.png"
+                src="assets/images/hero-wordmark.webp"
                 alt="FinOps for AI"
                 width="339"
                 height="111"
@@ -328,7 +341,7 @@
           <ul class="trust__row">
             <li class="trust__item trust__item--g2">
               <img
-                src="assets/logos/trust-g2.png"
+                src="assets/logos/trust-g2.webp"
                 alt="G2 — 4.8 out of 5 stars, 500+ happy customers"
                 width="208"
                 height="60"
@@ -336,7 +349,7 @@
             </li>
             <li class="trust__item trust__item--gartner">
               <img
-                src="assets/logos/trust-gartner.png"
+                src="assets/logos/trust-gartner.webp"
                 alt="Gartner Peer Insights"
                 width="127"
                 height="65"
@@ -344,7 +357,7 @@
             </li>
             <li class="trust__item trust__item--aws">
               <img
-                src="assets/logos/trust-aws.png"
+                src="assets/logos/trust-aws.webp"
                 alt="AWS Partner — AI Services Competency"
                 width="75"
                 height="60"
@@ -352,7 +365,7 @@
             </li>
             <li class="trust__item trust__item--gcp">
               <img
-                src="assets/logos/trust-gcp.png"
+                src="assets/logos/trust-gcp.webp"
                 alt="Google Cloud Partner"
                 width="132"
                 height="65"
@@ -360,7 +373,7 @@
             </li>
             <li class="trust__item trust__item--microsoft">
               <img
-                src="assets/logos/trust-microsoft.png"
+                src="assets/logos/trust-microsoft.webp"
                 alt="Microsoft Solutions Partner"
                 width="134"
                 height="62"
@@ -697,7 +710,7 @@
             <li class="resource-card reveal" style="--d: 0ms">
               <div class="resource-card__thumb">
                 <img
-                  src="assets/images/guide-thumb.png"
+                  src="assets/images/guide-thumb.webp"
                   alt=""
                   width="216"
                   height="128"
@@ -733,7 +746,7 @@
             <li class="resource-card reveal" style="--d: 90ms">
               <div class="resource-card__thumb">
                 <img
-                  src="assets/images/report-thumb.png"
+                  src="assets/images/report-thumb.webp"
                   alt=""
                   width="216"
                   height="128"
@@ -766,7 +779,7 @@
             <li class="resource-card reveal" style="--d: 180ms">
               <div class="resource-card__thumb">
                 <img
-                  src="assets/images/compare-thumb.png"
+                  src="assets/images/compare-thumb.webp"
                   alt=""
                   width="216"
                   height="128"
@@ -818,7 +831,7 @@
             <article class="partner-card reveal" style="--d: 0ms">
               <div class="partner-card__badge">
                 <img
-                  src="assets/logos/partner-aws-card.png"
+                  src="assets/logos/partner-aws-card.webp"
                   alt="AWS Partner"
                   width="73"
                   height="75"
@@ -829,7 +842,7 @@
             <article class="partner-card reveal" style="--d: 100ms">
               <div class="partner-card__badge partner-card__badge--ant">
                 <img
-                  src="assets/logos/anthropic-wordmark.png"
+                  src="assets/logos/anthropic-wordmark.webp"
                   alt="Anthropic"
                   width="163"
                   height="19"
@@ -841,45 +854,45 @@
 
           <ul class="logo-cloud">
             <li class="reveal" style="--d: 0ms">
-              <img src="assets/logos/airmeet.png" alt="Airmeet" width="129" height="30" />
+              <img src="assets/logos/airmeet.webp" alt="Airmeet" width="129" height="30" />
             </li>
             <li class="reveal" style="--d: 60ms">
-              <img src="assets/logos/crexi.png" alt="CREXi" width="126" height="26" />
+              <img src="assets/logos/crexi.webp" alt="CREXi" width="126" height="26" />
             </li>
             <li class="reveal" style="--d: 120ms">
-              <img src="assets/logos/wishpond.png" alt="Wishpond" width="128" height="28" />
+              <img src="assets/logos/wishpond.webp" alt="Wishpond" width="128" height="28" />
             </li>
             <li class="reveal" style="--d: 180ms">
-              <img src="assets/logos/hypercare.png" alt="Hypercare" width="134" height="24" />
+              <img src="assets/logos/hypercare.webp" alt="Hypercare" width="134" height="24" />
             </li>
             <li class="reveal" style="--d: 240ms">
-              <img src="assets/logos/icabbi.png" alt="iCabbi" width="26" height="24" />
+              <img src="assets/logos/icabbi.webp" alt="iCabbi" width="26" height="24" />
             </li>
             <li class="reveal" style="--d: 300ms">
-              <img src="assets/logos/client-46514.png" alt="" width="115" height="29" />
+              <img src="assets/logos/client-46514.webp" alt="" width="115" height="29" />
             </li>
             <li class="reveal" style="--d: 360ms">
-              <img src="assets/logos/jaxsta.png" alt="jaxsta" width="86" height="31" />
+              <img src="assets/logos/jaxsta.webp" alt="jaxsta" width="86" height="31" />
             </li>
             <li class="reveal" style="--d: 420ms">
-              <img src="assets/logos/movista.png" alt="MOVISTA" width="143" height="38" />
+              <img src="assets/logos/movista.webp" alt="MOVISTA" width="143" height="38" />
             </li>
             <li class="reveal" style="--d: 480ms">
-              <img src="assets/logos/radix.png" alt="RADIX" width="102" height="26" />
+              <img src="assets/logos/radix.webp" alt="RADIX" width="102" height="26" />
             </li>
             <li class="reveal" style="--d: 540ms">
               <img
-                src="assets/logos/singular-decisions.png"
+                src="assets/logos/singular-decisions.webp"
                 alt="singular decisions"
                 width="69"
                 height="30"
               />
             </li>
             <li class="reveal" style="--d: 600ms">
-              <img src="assets/logos/creditsense.png" alt="CreditSense" width="147" height="20" />
+              <img src="assets/logos/creditsense.webp" alt="CreditSense" width="147" height="20" />
             </li>
             <li class="reveal" style="--d: 660ms">
-              <img src="assets/logos/qoria.png" alt="Qoria" width="98" height="28" />
+              <img src="assets/logos/qoria.webp" alt="Qoria" width="98" height="28" />
             </li>
           </ul>
         </div>
@@ -889,7 +902,7 @@
     <section class="footer-cta" id="footer-cta">
       <img
         class="footer-cta__left-graphic"
-        src="assets/images/footer-cta-left-graphic.png"
+        src="assets/images/footer-cta-left-graphic.webp"
         alt=""
         width="260"
         height="418"
@@ -897,7 +910,7 @@
       />
       <img
         class="footer-cta__right-graphic"
-        src="assets/images/footer-cta-right-graphic.png"
+        src="assets/images/footer-cta-right-graphic.webp"
         alt=""
         width="328"
         height="418"
@@ -1155,7 +1168,7 @@
           <a href="https://www.cloudkeeper.com/responsible-disclosure" target="_blank" rel="noopener noreferrer">Responsible Disclosure</a>
         </nav>
         <div class="footer__brand">
-          <img src="assets/logos/cloudkeeper.png" alt="CloudKeeper" width="174" height="38" />
+          <img src="assets/logos/cloudkeeper.webp" alt="CloudKeeper" width="174" height="38" />
           <p>Copyright ©2026</p>
         </div>
       </div>
