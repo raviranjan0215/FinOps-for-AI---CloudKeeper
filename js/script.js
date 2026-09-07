@@ -327,7 +327,7 @@
   }
 
   function isApiUnavailable(res) {
-    return res.status === 404 || res.status === 405 || res.status === 501 || res.status === 503;
+    return res.status === 404 || res.status === 405 || res.status === 500 || res.status === 501 || res.status === 502 || res.status === 503;
   }
 
   function leadPayload(email, form) {

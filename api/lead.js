@@ -103,6 +103,18 @@ async function submitHubSpotForm(email, context) {
 
   if (!response.ok) {
     console.error("lead: hubspot submit failed", response.status, payload);
+    const errors = payload && Array.isArray(payload.errors) ? payload.errors : [];
+    const already =
+      response.status === 409 ||
+      errors.some(function (item) {
+        var text = String((item && (item.errorType || item.message)) || "").toLowerCase();
+        return text.includes("already") || text.includes("duplicate") || text.includes("existing");
+      });
+    if (already) {
+      const err = new Error("already_registered");
+      err.code = "already_registered";
+      throw err;
+    }
     throw new Error("submit_failed");
   }
 }
@@ -139,6 +151,10 @@ module.exports = async function handler(req, res) {
 
     send(res, 200, { ok: true });
   } catch (err) {
+    if (err && err.code === "already_registered") {
+      send(res, 409, { registered: true, message: DUPLICATE_MESSAGE });
+      return;
+    }
     console.error("lead: request failed", err);
     send(res, 502, { message: GENERIC_MESSAGE });
   }
