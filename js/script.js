@@ -204,13 +204,6 @@
     "This email ID is already registered. Please use another one.";
   var GENERIC_EMAIL_ERROR = "Something went wrong. Please try again.";
   var LEAD_API = "/api/lead";
-  var HS_PORTAL = "47057450";
-  var HS_FORM = "9c9163c2-6f41-4369-bac9-8f4668c93889";
-  var HS_SUBMIT =
-    "https://api.hsforms.com/submissions/v3/integration/submit/" +
-    HS_PORTAL +
-    "/" +
-    HS_FORM;
 
   function getEmailValue(form) {
     var input = form.querySelector('input[type="email"]');
@@ -302,41 +295,6 @@
     };
   }
 
-  function isApiUnavailable(res) {
-    return res.status === 404 || res.status === 501 || res.status === 503;
-  }
-
-  function submitHubSpotDirect(email, form) {
-    var payload = leadPayload(email, form);
-    var context = {};
-    if (payload.pageUri) {
-      context.pageUri = payload.pageUri;
-    }
-    if (payload.pageName) {
-      context.pageName = payload.pageName;
-    }
-    if (payload.hutk) {
-      context.hutk = payload.hutk;
-    }
-
-    return fetch(HS_SUBMIT, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        fields: [{ objectTypeId: "0-1", name: "email", value: email }],
-        context: context,
-      }),
-    }).then(function (res) {
-      if (!res.ok) {
-        return { ok: false, message: GENERIC_EMAIL_ERROR };
-      }
-      return { ok: true };
-    });
-  }
-
   function submitLead(email, form) {
     var payload = leadPayload(email, form);
 
@@ -351,9 +309,6 @@
       .then(function (res) {
         var type = (res.headers.get("content-type") || "").toLowerCase();
         if (!type.includes("application/json")) {
-          if (isApiUnavailable(res) || !res.ok) {
-            return submitHubSpotDirect(email, form);
-          }
           return { ok: false, message: GENERIC_EMAIL_ERROR };
         }
 
@@ -364,9 +319,6 @@
           if (res.ok) {
             return { ok: true };
           }
-          if (isApiUnavailable(res)) {
-            return submitHubSpotDirect(email, form);
-          }
           return {
             ok: false,
             message: data.message || GENERIC_EMAIL_ERROR,
@@ -374,7 +326,7 @@
         });
       })
       .catch(function () {
-        return submitHubSpotDirect(email, form);
+        return { ok: false, message: GENERIC_EMAIL_ERROR };
       });
   }
 
