@@ -11,6 +11,20 @@ function normalizeEmail(value) {
     .toLowerCase();
 }
 
+function readBody(req) {
+  if (req.body && typeof req.body === "object") {
+    return req.body;
+  }
+  if (typeof req.body === "string") {
+    try {
+      return JSON.parse(req.body);
+    } catch (err) {
+      return {};
+    }
+  }
+  return {};
+}
+
 function send(res, status, body) {
   res.setHeader("Cache-Control", "no-store");
   res.status(status).json(body);
@@ -93,21 +107,14 @@ async function submitHubSpotForm(email, context) {
   }
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     send(res, 405, { message: GENERIC_MESSAGE });
     return;
   }
 
-  const token = process.env.HUBSPOT_ACCESS_TOKEN;
-  if (!token) {
-    console.error("lead: HUBSPOT_ACCESS_TOKEN is not set");
-    send(res, 503, { message: GENERIC_MESSAGE });
-    return;
-  }
-
-  const body = req.body && typeof req.body === "object" ? req.body : {};
+  const body = readBody(req);
   const email = normalizeEmail(body.email);
 
   if (!EMAIL_RE.test(email)) {
@@ -115,8 +122,10 @@ export default async function handler(req, res) {
     return;
   }
 
+  const token = (process.env.HUBSPOT_ACCESS_TOKEN || "").trim();
+
   try {
-    if (await contactExists(token, email)) {
+    if (token && (await contactExists(token, email))) {
       send(res, 409, { registered: true, message: DUPLICATE_MESSAGE });
       return;
     }
@@ -133,4 +142,4 @@ export default async function handler(req, res) {
     console.error("lead: request failed", err);
     send(res, 502, { message: GENERIC_MESSAGE });
   }
-}
+};
