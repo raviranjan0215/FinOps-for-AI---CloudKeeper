@@ -2173,7 +2173,7 @@ p {
     max-width: min(132px, 100%);
   }
 
-  /* icabbi.png is a leftover Hypercare heart mark, not the iCabbi wordmark */
+  /* icabbi.webp is a leftover Hypercare heart mark, not the iCabbi wordmark */
   .logo-cloud li:has(img[src*="icabbi"]) {
     display: none;
   }
