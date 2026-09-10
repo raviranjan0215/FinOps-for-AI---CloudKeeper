@@ -3,6 +3,8 @@ const HS_FORM = "9c9163c2-6f41-4369-bac9-8f4668c93889";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DUPLICATE_MESSAGE =
   "This email ID is already registered. Please use another one.";
+const BLOCKED_EMAIL_MESSAGE =
+  "Use a work email. Gmail and other personal inboxes aren’t accepted.";
 const GENERIC_MESSAGE = "Something went wrong. Please try again.";
 
 function normalizeEmail(value) {
@@ -115,6 +117,15 @@ async function submitHubSpotForm(email, context) {
       err.code = "already_registered";
       throw err;
     }
+    const blocked = errors.some(function (item) {
+      var text = String((item && (item.errorType || item.message)) || "").toLowerCase();
+      return text.includes("blocked_email") || text.includes("not allowed");
+    });
+    if (blocked) {
+      const err = new Error("blocked_email");
+      err.code = "blocked_email";
+      throw err;
+    }
     throw new Error("submit_failed");
   }
 }
@@ -153,6 +164,10 @@ module.exports = async function handler(req, res) {
   } catch (err) {
     if (err && err.code === "already_registered") {
       send(res, 409, { registered: true, message: DUPLICATE_MESSAGE });
+      return;
+    }
+    if (err && err.code === "blocked_email") {
+      send(res, 400, { message: BLOCKED_EMAIL_MESSAGE });
       return;
     }
     console.error("lead: request failed", err);

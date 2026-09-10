@@ -202,15 +202,14 @@
   var DEFAULT_EMAIL_ERROR = "Enter a valid work email.";
   var DUPLICATE_EMAIL_ERROR =
     "This email ID is already registered. Please use another one.";
-  var ALREADY_BOOKED_ERROR = "You've already booked a demo.";
+  var BLOCKED_EMAIL_ERROR =
+    "Use a work email. Gmail and other personal inboxes aren’t accepted.";
   var GENERIC_EMAIL_ERROR = "Something went wrong. Please try again.";
   var LEAD_API = "/api/lead";
   var LEAD_EMAILS_KEY = "finops-demo-emails";
   var LEAD_EMAILS_COOKIE = "finops-demo-emails";
-  var LEAD_BOOKED_KEY = "finops-demo-booked";
   var rememberedEmails = {};
   var pendingEmails = {};
-  var demoBooked = false;
   var HS_PORTAL = "47057450";
   var HS_FORM = "9c9163c2-6f41-4369-bac9-8f4668c93889";
   var HS_SUBMIT =
@@ -282,25 +281,21 @@
   }
 
   function lockOtherLeadForms(sourceForm, email) {
+    var booked = String(email || "").toLowerCase();
     document.querySelectorAll("[data-lead-form]").forEach(function (form) {
       if (form === sourceForm || form.hidden) {
         return;
       }
       var otherEmail = getEmailValue(form);
-      var message =
-        otherEmail && otherEmail.toLowerCase() === String(email || "").toLowerCase()
-          ? DUPLICATE_EMAIL_ERROR
-          : ALREADY_BOOKED_ERROR;
-      showDuplicateError(form, message, true);
+      if (otherEmail && otherEmail.toLowerCase() === booked) {
+        showDuplicateError(form, DUPLICATE_EMAIL_ERROR, true);
+      }
     });
   }
 
   function leadBlockReason(email) {
     if (isRememberedEmail(email)) {
       return DUPLICATE_EMAIL_ERROR;
-    }
-    if (isDemoBooked()) {
-      return ALREADY_BOOKED_ERROR;
     }
     return "";
   }
@@ -375,30 +370,25 @@
     return Boolean(key && loadRememberedEmails()[key]);
   }
 
-  function loadDemoBooked() {
-    if (demoBooked) {
-      return true;
-    }
-    try {
-      demoBooked = window.localStorage.getItem(LEAD_BOOKED_KEY) === "1";
-    } catch (err) {
-      demoBooked = false;
-    }
-    return demoBooked;
-  }
-
-  function isDemoBooked() {
-    return loadDemoBooked();
-  }
-
   function markDemoBooked(email) {
     rememberEmail(email);
-    demoBooked = true;
-    try {
-      window.localStorage.setItem(LEAD_BOOKED_KEY, "1");
-    } catch (err) {
-      /* ignore storage errors */
+  }
+
+  function payloadErrorText(data) {
+    if (!data) {
+      return "";
     }
+    var errors = Array.isArray(data.errors) ? data.errors : [];
+    return errors
+      .map(function (item) {
+        return String((item && (item.errorType || item.message)) || "").toLowerCase();
+      })
+      .join(" ");
+  }
+
+  function isBlockedEmailPayload(data) {
+    var text = payloadErrorText(data);
+    return text.indexOf("blocked_email") !== -1 || text.indexOf("not allowed") !== -1;
   }
 
   function isDuplicatePayload(data) {
@@ -408,15 +398,12 @@
     if (data.registered) {
       return true;
     }
-    var errors = Array.isArray(data.errors) ? data.errors : [];
-    return errors.some(function (item) {
-      var text = String((item && (item.errorType || item.message)) || "").toLowerCase();
-      return (
-        text.indexOf("already") !== -1 ||
-        text.indexOf("duplicate") !== -1 ||
-        text.indexOf("existing") !== -1
-      );
-    });
+    var text = payloadErrorText(data);
+    return (
+      text.indexOf("already") !== -1 ||
+      text.indexOf("duplicate") !== -1 ||
+      text.indexOf("existing") !== -1
+    );
   }
 
   function isApiUnavailable(res) {
@@ -464,6 +451,9 @@
             rememberEmail(email);
             return { registered: true };
           }
+          if (isBlockedEmailPayload(data)) {
+            return { ok: false, message: BLOCKED_EMAIL_ERROR };
+          }
           if (!res.ok) {
             return { ok: false, message: GENERIC_EMAIL_ERROR };
           }
@@ -502,6 +492,9 @@
           if (res.status === 409 || isDuplicatePayload(data)) {
             rememberEmail(email);
             return { registered: true, message: data.message || DUPLICATE_EMAIL_ERROR };
+          }
+          if (isBlockedEmailPayload(data)) {
+            return { ok: false, message: data.message || BLOCKED_EMAIL_ERROR };
           }
           if (res.ok) {
             markDemoBooked(email);
@@ -591,7 +584,11 @@
   }
 
   loadRememberedEmails();
-  loadDemoBooked();
+  try {
+    window.localStorage.removeItem("finops-demo-booked");
+  } catch (err) {
+    /* ignore storage errors */
+  }
 
   document.querySelectorAll("[data-lead-form]").forEach(function (form) {
     var input = form.querySelector('input[type="email"]');
