@@ -206,8 +206,9 @@
     "Use a work email. Gmail and other personal inboxes aren’t accepted.";
   var GENERIC_EMAIL_ERROR = "Something went wrong. Please try again.";
   var LEAD_API = "/api/lead";
-  var LEAD_EMAILS_KEY = "finops-demo-emails";
-  var LEAD_EMAILS_COOKIE = "finops-demo-emails";
+  var FORM_UNIQUE_CODE = "finops_for_ai_demo";
+  var LEAD_EMAILS_KEY = "ck-form-emails:" + FORM_UNIQUE_CODE;
+  var LEAD_EMAILS_COOKIE = "ck_form_emails_" + FORM_UNIQUE_CODE;
   var rememberedEmails = {};
   var pendingEmails = {};
   var HS_PORTAL = "47057450";
@@ -329,12 +330,23 @@
       /* ignore storage errors */
     }
     try {
-      var match = document.cookie.match(/(?:^|; )finops-demo-emails=([^;]*)/);
+      var cookieRe = new RegExp(
+        "(?:^|; )(?:" + LEAD_EMAILS_COOKIE + "|finops-demo-emails)=([^;]*)"
+      );
+      var match = document.cookie.match(cookieRe);
       if (match) {
         addEmailsToSet(set, decodeURIComponent(match[1]));
       }
     } catch (err) {
       /* ignore cookie errors */
+    }
+    try {
+      addEmailsToSet(
+        set,
+        JSON.parse(window.localStorage.getItem("finops-demo-emails") || "[]")
+      );
+    } catch (err) {
+      /* ignore legacy storage */
     }
     rememberedEmails = set;
     return set;
@@ -414,6 +426,8 @@
     var pageUri = window.location.origin + window.location.pathname;
     return {
       email: email,
+      uniqueCode: FORM_UNIQUE_CODE,
+      unique_code: FORM_UNIQUE_CODE,
       pageUri: pageUri,
       pageName: document.title,
       hutk: getHutk(),
@@ -430,36 +444,60 @@
       context.hutk = payload.hutk;
     }
 
-    return fetch(HS_SUBMIT, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        fields: [{ objectTypeId: "0-1", name: "email", value: email }],
-        context: context,
-      }),
-    }).then(function (res) {
-      return res
-        .json()
-        .catch(function () {
-          return {};
-        })
-        .then(function (data) {
-          if (res.status === 409 || isDuplicatePayload(data)) {
-            rememberEmail(email);
-            return { registered: true };
-          }
-          if (isBlockedEmailPayload(data)) {
-            return { ok: false, message: BLOCKED_EMAIL_ERROR };
-          }
-          if (!res.ok) {
-            return { ok: false, message: GENERIC_EMAIL_ERROR };
-          }
-          markDemoBooked(email);
-          return { ok: true };
-        });
+    function postHs(fields) {
+      return fetch(HS_SUBMIT, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fields: fields,
+          context: context,
+        }),
+      }).then(function (res) {
+        return res
+          .json()
+          .catch(function () {
+            return {};
+          })
+          .then(function (data) {
+            return { res: res, data: data };
+          });
+      });
+    }
+
+    var fields = [
+      { objectTypeId: "0-1", name: "email", value: email },
+      { objectTypeId: "0-1", name: "unique_code", value: FORM_UNIQUE_CODE },
+    ];
+
+    return postHs(fields).then(function (result) {
+      var text = payloadErrorText(result.data);
+      if (
+        !result.res.ok &&
+        (text.indexOf("unique_code") !== -1 ||
+          text.indexOf("invalid field") !== -1 ||
+          text.indexOf("unknown") !== -1)
+      ) {
+        return postHs([{ objectTypeId: "0-1", name: "email", value: email }]);
+      }
+      return result;
+    }).then(function (result) {
+      var res = result.res;
+      var data = result.data;
+      if (res.status === 409 || isDuplicatePayload(data)) {
+        rememberEmail(email);
+        return { registered: true };
+      }
+      if (isBlockedEmailPayload(data)) {
+        return { ok: false, message: BLOCKED_EMAIL_ERROR };
+      }
+      if (!res.ok) {
+        return { ok: false, message: GENERIC_EMAIL_ERROR };
+      }
+      markDemoBooked(email);
+      return { ok: true };
     });
   }
 
