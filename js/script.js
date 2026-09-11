@@ -203,7 +203,6 @@
     "This email ID is already registered. Please use another one.";
   var GENERIC_EMAIL_ERROR = "Something went wrong. Please try again.";
   var CHECK_EMAIL_API = "/api";
-  var FORM_UNIQUE_CODE = "finops_for_ai_demo";
   var HS_PORTAL = "47057450";
   var HS_FORM = "9c9163c2-6f41-4369-bac9-8f4668c93889";
   var HS_SUBMIT =
@@ -288,12 +287,30 @@
       },
       body: JSON.stringify({ email: email }),
     }).then(function (res) {
+      var type = (res.headers.get("content-type") || "").toLowerCase();
+      if (!type.includes("application/json")) {
+        throw new Error("api_unavailable");
+      }
       return res.json().then(function (data) {
         if (!res.ok) {
           throw new Error((data && (data.message || data.error)) || "check_failed");
         }
         return Boolean(data && data.success);
       });
+    });
+  }
+
+  /** Persist email after HubSpot success so the next check blocks it */
+  function registerEmail(email) {
+    return fetch(CHECK_EMAIL_API, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email, register: true }),
+    }).catch(function () {
+      /* non-blocking */
     });
   }
 
@@ -329,17 +346,18 @@
 
     var fields = [
       { objectTypeId: "0-1", name: "email", value: email },
-      { objectTypeId: "0-1", name: "unique_code", value: FORM_UNIQUE_CODE },
+      { objectTypeId: "0-1", name: "finops_for_ai_demo", value: "yes" },
     ];
 
     return post(fields).then(function (result) {
       var text = JSON.stringify(result.data || {}).toLowerCase();
       if (
         !result.res.ok &&
-        (text.indexOf("unique_code") !== -1 ||
+        (text.indexOf("finops_for_ai_demo") !== -1 ||
           text.indexOf("invalid field") !== -1 ||
           text.indexOf("unknown") !== -1)
       ) {
+        /* Property missing on form — still accept email-only submit */
         return post([{ objectTypeId: "0-1", name: "email", value: email }]);
       }
       return result;
@@ -441,12 +459,15 @@
           if (result === null) {
             return;
           }
+          if (result && result.ok) {
+            return registerEmail(email).then(function () {
+              form.dataset.submitting = "false";
+              setLoading(form, false);
+              showSuccess(card);
+            });
+          }
           form.dataset.submitting = "false";
           setLoading(form, false);
-          if (result && result.ok) {
-            showSuccess(card);
-            return;
-          }
           showLeadError(form, GENERIC_EMAIL_ERROR);
         })
         .catch(function () {

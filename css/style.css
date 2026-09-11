@@ -1928,39 +1928,47 @@ p {
     --header-h: 64px;
   }
 
+  .header {
+    height: auto;
+    min-height: var(--header-h);
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   .header__inner {
     grid-template-columns: 1fr auto;
+    padding: 0 20px;
   }
 
   .header__toggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    grid-column: 2;
   }
 
   .header__cta--desktop {
     display: none;
   }
 
-  .header__cta--mobile {
-    display: inline-flex;
-    width: 100%;
-  }
-
   .header__nav {
     grid-column: 1 / -1;
+    justify-self: stretch;
     position: absolute;
-    top: var(--header-h);
+    top: 100%;
     left: 0;
     right: 0;
-    justify-self: stretch;
+    width: 100%;
     display: none;
     flex-direction: column;
     align-items: stretch;
-    gap: 0;
+    gap: 8px;
+    padding: 16px 20px 24px;
     background: var(--color-navy);
-    padding: 16px 24px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(32, 43, 78, 0.9);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+    box-sizing: border-box;
+    z-index: 99;
   }
 
   .header--open .header__nav {
@@ -1969,9 +1977,36 @@ p {
 
   .header__list {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 8px 0 16px;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .header__link {
+    display: block;
+    width: 100%;
+    padding: 12px 4px;
+    font-size: 16px;
+    line-height: 1.4;
+    border-bottom: 1px solid rgba(32, 43, 78, 0.6);
+    box-sizing: border-box;
+  }
+
+  .header__cta--mobile {
+    display: inline-flex;
+    align-self: center;
+    justify-content: center;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    height: 48px;
+    min-height: 48px;
+    margin-top: 12px;
+    border-bottom: none;
+    box-sizing: border-box;
   }
 
   .resource-card,
@@ -2039,6 +2074,10 @@ p {
 @media (max-width: 599px) {
   :root {
     --pad: 20px;
+  }
+
+  .header__inner {
+    padding: 0 16px;
   }
 
   .hero {
