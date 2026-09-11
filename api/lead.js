@@ -1,12 +1,21 @@
 const HS_PORTAL = "47057450";
 const HS_FORM = "9c9163c2-6f41-4369-bac9-8f4668c93889";
+const FORM_UNIQUE_CODE = "finops_for_ai_demo";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DUPLICATE_MESSAGE =
   "This email ID is already registered. Please use another one.";
+const BLOCKED_EMAIL_MESSAGE =
+  "Use a work email. Gmail and other personal inboxes aren’t accepted.";
 const GENERIC_MESSAGE = "Something went wrong. Please try again.";
 
 function normalizeEmail(value) {
   return String(value || "")
+    .trim()
+    .toLowerCase();
+}
+
+function normalizeUniqueCode(value) {
+  return String(value || FORM_UNIQUE_CODE)
     .trim()
     .toLowerCase();
 }
@@ -30,48 +39,102 @@ function send(res, status, body) {
   res.status(status).json(body);
 }
 
-async function contactExists(token, email) {
+function submissionMatchesThisForm(item) {
+  if (!item || typeof item !== "object") {
+    return false;
+  }
+  var formId = String(item["form-id"] || item.formId || item.formGuid || "").toLowerCase();
+  var pageUrl = String(item["page-url"] || item.pageUrl || "").toLowerCase();
+  var title = String(item.title || item["form-name"] || "").toLowerCase();
+  return (
+    formId === HS_FORM.toLowerCase() ||
+    pageUrl.indexOf("finops_for_ai_demo") !== -1 ||
+    pageUrl.indexOf("full-stack-finops-for-ai") !== -1 ||
+    title.indexOf("finops for ai") !== -1
+  );
+}
+
+function uniqueCodeOnContact(properties) {
+  if (!properties || typeof properties !== "object") {
+    return "";
+  }
+  var keys = [
+    "unique_code",
+    "form_unique_code",
+    "form_code",
+    "campaign_code",
+    "finops_for_ai_demo",
+  ];
+  for (var i = 0; i < keys.length; i++) {
+    var node = properties[keys[i]];
+    var value =
+      node && typeof node === "object" && "value" in node ? node.value : node;
+    if (normalizeUniqueCode(value) === FORM_UNIQUE_CODE) {
+      return FORM_UNIQUE_CODE;
+    }
+  }
+  return "";
+}
+
+async function alreadySubmittedThisForm(token, email) {
   const response = await fetch(
-    "https://api.hubapi.com/crm/v3/objects/contacts/search",
+    "https://api.hubapi.com/contacts/v1/contact/email/" +
+      encodeURIComponent(email) +
+      "/profile",
     {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        filterGroups: [
-          {
-            filters: [
-              {
-                propertyName: "email",
-                operator: "EQ",
-                value: email,
-              },
-            ],
-          },
-        ],
-        properties: ["email"],
-        limit: 1,
-      }),
+      headers: { Authorization: "Bearer " + token },
     }
   );
+
+  if (response.status === 404) {
+    return false;
+  }
 
   const payload = await response.json().catch(function () {
     return null;
   });
 
   if (!response.ok) {
-    console.error("lead: hubspot search failed", response.status, payload);
+    console.error("lead: hubspot contact lookup failed", response.status, payload);
     throw new Error("search_failed");
   }
 
-  return Boolean(payload && payload.total > 0);
+  if (uniqueCodeOnContact(payload && payload.properties)) {
+    return true;
+  }
+
+  const submissions = Array.isArray(payload && payload["form-submissions"])
+    ? payload["form-submissions"]
+    : [];
+  return submissions.some(submissionMatchesThisForm);
 }
 
-async function submitHubSpotForm(email, context) {
+function hubSpotFields(email) {
+  return [
+    { objectTypeId: "0-1", name: "email", value: email },
+    { objectTypeId: "0-1", name: "unique_code", value: FORM_UNIQUE_CODE },
+  ];
+}
+
+function isUnknownFieldError(payload) {
+  const errors = payload && Array.isArray(payload.errors) ? payload.errors : [];
+  return errors.some(function (item) {
+    var text = String((item && (item.errorType || item.message)) || "").toLowerCase();
+    return (
+      text.includes("unique_code") ||
+      text.includes("invalid field") ||
+      text.includes("unknown") ||
+      text.includes("not a valid field")
+    );
+  });
+}
+
+async function postHubSpotForm(email, context, includeUniqueCode) {
+  const fields = includeUniqueCode
+    ? hubSpotFields(email)
+    : [{ objectTypeId: "0-1", name: "email", value: email }];
   const body = {
-    fields: [{ objectTypeId: "0-1", name: "email", value: email }],
+    fields: fields,
     context: {},
   };
 
@@ -101,21 +164,45 @@ async function submitHubSpotForm(email, context) {
     return null;
   });
 
-  if (!response.ok) {
-    console.error("lead: hubspot submit failed", response.status, payload);
-    const errors = payload && Array.isArray(payload.errors) ? payload.errors : [];
-    const already =
-      response.status === 409 ||
-      errors.some(function (item) {
-        var text = String((item && (item.errorType || item.message)) || "").toLowerCase();
-        return text.includes("already") || text.includes("duplicate") || text.includes("existing");
-      });
-    if (already) {
-      const err = new Error("already_registered");
-      err.code = "already_registered";
-      throw err;
-    }
-    throw new Error("submit_failed");
+  return { response: response, payload: payload };
+}
+
+function throwFromHubSpotFailure(response, payload) {
+  console.error("lead: hubspot submit failed", response.status, payload);
+  const errors = payload && Array.isArray(payload.errors) ? payload.errors : [];
+  const already =
+    response.status === 409 ||
+    errors.some(function (item) {
+      var text = String((item && (item.errorType || item.message)) || "").toLowerCase();
+      return text.includes("already") || text.includes("duplicate") || text.includes("existing");
+    });
+  if (already) {
+    const err = new Error("already_registered");
+    err.code = "already_registered";
+    throw err;
+  }
+  const blocked = errors.some(function (item) {
+    var text = String((item && (item.errorType || item.message)) || "").toLowerCase();
+    return text.includes("blocked_email") || text.includes("not allowed");
+  });
+  if (blocked) {
+    const err = new Error("blocked_email");
+    err.code = "blocked_email";
+    throw err;
+  }
+  throw new Error("submit_failed");
+}
+
+async function submitHubSpotForm(email, context) {
+  let result = await postHubSpotForm(email, context, true);
+  if (
+    !result.response.ok &&
+    isUnknownFieldError(result.payload)
+  ) {
+    result = await postHubSpotForm(email, context, false);
+  }
+  if (!result.response.ok) {
+    throwFromHubSpotFailure(result.response, result.payload);
   }
 }
 
@@ -128,16 +215,27 @@ module.exports = async function handler(req, res) {
 
   const body = readBody(req);
   const email = normalizeEmail(body.email);
+  const requestedCode = String(
+    body.uniqueCode || body.unique_code || body.formCode || ""
+  ).trim();
+  const uniqueCode = requestedCode
+    ? normalizeUniqueCode(requestedCode)
+    : FORM_UNIQUE_CODE;
 
   if (!EMAIL_RE.test(email)) {
     send(res, 400, { message: "Enter a valid work email." });
     return;
   }
 
+  if (uniqueCode !== FORM_UNIQUE_CODE) {
+    send(res, 400, { message: GENERIC_MESSAGE });
+    return;
+  }
+
   const token = (process.env.HUBSPOT_ACCESS_TOKEN || "").trim();
 
   try {
-    if (token && (await contactExists(token, email))) {
+    if (token && (await alreadySubmittedThisForm(token, email))) {
       send(res, 409, { registered: true, message: DUPLICATE_MESSAGE });
       return;
     }
@@ -149,10 +247,14 @@ module.exports = async function handler(req, res) {
       hutk: typeof body.hutk === "string" ? body.hutk.slice(0, 200) : "",
     });
 
-    send(res, 200, { ok: true });
+    send(res, 200, { ok: true, uniqueCode: FORM_UNIQUE_CODE });
   } catch (err) {
     if (err && err.code === "already_registered") {
       send(res, 409, { registered: true, message: DUPLICATE_MESSAGE });
+      return;
+    }
+    if (err && err.code === "blocked_email") {
+      send(res, 400, { message: BLOCKED_EMAIL_MESSAGE });
       return;
     }
     console.error("lead: request failed", err);
