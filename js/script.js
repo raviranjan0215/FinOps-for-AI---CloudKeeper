@@ -198,7 +198,8 @@
     });
   }
 
-  /* Lead forms — Drupal /api duplicate check, then HubSpot submit */
+  /* Lead forms — Drupal /api duplicate check, then HubSpot submit.
+   * Only one duplicate copy (never "You've already booked a demo."). */
   var DUPLICATE_EMAIL_ERROR =
     "This email ID is already registered. Please use another one.";
   var GENERIC_EMAIL_ERROR = "Something went wrong. Please try again.";
@@ -210,6 +211,21 @@
     HS_PORTAL +
     "/" +
     HS_FORM;
+
+  /* Drop legacy client-side "already booked" flags from older builds */
+  try {
+    window.localStorage.removeItem("finops-demo-booked");
+    window.localStorage.removeItem("finops-demo-emails");
+    window.sessionStorage.removeItem("finops-demo-emails");
+  } catch (err) {
+    /* ignore */
+  }
+  try {
+    document.cookie =
+      "finops-demo-emails=; path=/; max-age=0; SameSite=Lax";
+  } catch (err) {
+    /* ignore */
+  }
 
   function getEmailValue(form) {
     var input = form.querySelector('input[type="email"]');
