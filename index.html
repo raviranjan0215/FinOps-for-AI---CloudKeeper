@@ -942,7 +942,68 @@
       </div>
     </footer>
 <script charset="utf-8" type="text/javascript" src="https://js.hsforms.net/forms/embed/v2.js"></script>
+    <script>
+      (function () {
+        var reduceMotion =
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        function showSuccess(card) {
+          if (!card) return;
+          var native = card.querySelector("[data-hs-lead]");
+          var success = card.querySelector("[data-lead-success]");
+          if (native) native.hidden = true;
+          if (success) {
+            success.hidden = false;
+            success.classList.add("is-in");
+          }
+          if (card.classList.contains("lead-card--inline")) return;
+          if (reduceMotion || typeof confetti !== "function" || typeof confetti.create !== "function") {
+            return;
+          }
+          var canvas = card.querySelector("[data-confetti-canvas]");
+          if (!canvas) return;
+          confetti.create(canvas, { resize: true, useWorker: true })({
+            particleCount: 90,
+            spread: 72,
+            startVelocity: 28,
+            origin: { y: 0.55 },
+            colors: ["#17a5fb", "#e80584", "#9a4bff", "#22c55e"],
+          });
+        }
+
+        function onSubmitted(targetSel) {
+          var target = document.querySelector(targetSel);
+          showSuccess(target && target.closest("[data-form-card]"));
+        }
+
+        hbspt.forms.create({
+          portalId: "47057450",
+          formId: "9c9163c2-6f41-4369-bac9-8f4668c93889",
+          region: "na1",
+          target: "#form-finopsai",
+          formInstanceId: "1",
+          css: "",
+          cssClass: "form-finopsai__hs",
+          onFormSubmitted: function () {
+            onSubmitted("#form-finopsai");
+          },
+        });
+
+        hbspt.forms.create({
+          portalId: "47057450",
+          formId: "9c9163c2-6f41-4369-bac9-8f4668c93889",
+          region: "na1",
+          target: "#form-finopsai-footer",
+          formInstanceId: "2",
+          css: "",
+          cssClass: "form-finopsai__hs",
+          onFormSubmitted: function () {
+            onSubmitted("#form-finopsai-footer");
+          },
+        });
+      })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
-    <script src="js/script.js?v=20260915h" defer></script>
+    <script src="js/script.js?v=20260915i" defer></script>
   </body>
 </html>

@@ -1,5 +1,5 @@
 /**
- * FinOps for AI LP — nav, tabs, reveals, HubSpot embeds, journey.
+ * FinOps for AI LP — nav, tabs, reveals, journey.
  */
 (function () {
   var header = document.getElementById("site-header");
@@ -140,75 +140,6 @@
       node.classList.add("is-in");
     });
   }
-
-  /* Same HubSpot form twice needs unique target + formInstanceId */
-  var HS = {
-    portalId: "47057450",
-    formId: "9c9163c2-6f41-4369-bac9-8f4668c93889",
-    region: "na1",
-  };
-
-  function burstConfetti(card) {
-    if (reduceMotion || typeof confetti !== "function" || typeof confetti.create !== "function") {
-      return;
-    }
-    var canvas = card.querySelector("[data-confetti-canvas]");
-    if (!canvas) return;
-    confetti.create(canvas, { resize: true, useWorker: true })({
-      particleCount: 90,
-      spread: 72,
-      startVelocity: 28,
-      origin: { y: 0.55 },
-      colors: ["#17a5fb", "#e80584", "#9a4bff", "#22c55e"],
-    });
-  }
-
-  function showSuccess(card) {
-    if (!card) return;
-    var native = card.querySelector("[data-hs-lead]");
-    var success = card.querySelector("[data-lead-success]");
-    if (native) native.hidden = true;
-    if (success) {
-      success.hidden = false;
-      success.classList.add("is-in");
-    }
-    if (!card.classList.contains("lead-card--inline")) burstConfetti(card);
-  }
-
-  function createHubSpotForm(targetSel, formInstanceId) {
-    var target = document.querySelector(targetSel);
-    if (!target) return;
-    var card = target.closest("[data-form-card]");
-
-    function create() {
-      if (!window.hbspt || !window.hbspt.forms) return false;
-      if (target.dataset.hsReady === "true") return true;
-      target.dataset.hsReady = "true";
-      window.hbspt.forms.create({
-        portalId: HS.portalId,
-        formId: HS.formId,
-        region: HS.region,
-        target: targetSel,
-        formInstanceId: formInstanceId,
-        css: "",
-        cssClass: "form-finopsai__hs",
-        onFormSubmitted: function () {
-          showSuccess(card);
-        },
-      });
-      return true;
-    }
-
-    if (create()) return;
-    var tries = 0;
-    var timer = window.setInterval(function () {
-      tries += 1;
-      if (create() || tries > 40) window.clearInterval(timer);
-    }, 150);
-  }
-
-  createHubSpotForm("#form-finopsai", "1");
-  createHubSpotForm("#form-finopsai-footer", "2");
 
   (function initJourneySteps() {
     var list = document.querySelector("[data-journey-steps]");
