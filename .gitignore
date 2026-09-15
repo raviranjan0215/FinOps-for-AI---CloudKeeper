@@ -1,7 +1,7 @@
-.DS_Store
+.data/
 .env
 .env.*
 *.log
 node_modules/
 .cursor/projects/
-.data/
+.DS_Store

@@ -250,64 +250,6 @@ p {
   }
 }
 
-/* Inputs */
-
-.field {
-  display: block;
-  width: 100%;
-}
-
-.field__input {
-  width: 100%;
-  height: 56px;
-  padding: 14px 18px;
-  border: 1px solid var(--color-primary);
-  border-radius: var(--radius-input);
-  background: var(--color-input);
-  color: var(--color-text);
-  font-size: 16px;
-  outline: none;
-  transition: border-color var(--ease), box-shadow var(--ease), background-color var(--ease);
-}
-
-.field__input::placeholder {
-  color: var(--color-text-secondary);
-}
-
-.field__input:not(:placeholder-shown) {
-  color: var(--color-text);
-  background: var(--color-white);
-}
-
-.field__input:focus-visible {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(23, 165, 251, 0.25);
-}
-
-.field.is-error .field__input,
-.field__input[aria-invalid="true"] {
-  border-color: var(--color-error);
-  box-shadow: 0 0 0 3px rgba(253, 31, 31, 0.18);
-}
-
-.field__error {
-  display: none;
-  margin-top: 8px;
-  font-size: 13px;
-  line-height: 1.4;
-  text-align: left;
-  color: var(--color-error);
-}
-
-.field.is-error .field__error {
-  display: block;
-}
-
-.field__input--light {
-  background: var(--color-white);
-  border-color: #e2e8f0;
-}
-
 /* Header */
 
 .header {
@@ -603,10 +545,14 @@ p {
   z-index: 2;
 }
 
-.lead-form {
+.lead-form-native {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.lead-form-native[hidden] {
+  display: none !important;
 }
 
 .lead-form__title {
@@ -616,11 +562,11 @@ p {
   letter-spacing: -0.5px;
   text-align: center;
   color: var(--color-text);
-  margin-bottom: 20px;
+  margin: 0 0 4px;
 }
 
 .lead-form__note {
-  margin-top: 10px;
+  margin: 4px 0 0;
   padding: 5px 0;
   text-align: center;
   font-size: 20px;
@@ -634,6 +580,232 @@ p {
   color: var(--color-pink);
   margin-right: 4px;
 }
+
+/* Native HubSpot hero form */
+.form-finopsai {
+  width: 100%;
+}
+
+.form-finopsai form,
+.form-finopsai .hs-form,
+.form-finopsai .form-finopsai__hs {
+  display: flex !important;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  width: 100%;
+}
+
+.form-finopsai fieldset {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.form-finopsai .hs-form-field {
+  margin: 0 !important;
+  width: 100%;
+}
+
+.form-finopsai .hs-form-field > label,
+.form-finopsai .hs-field-desc,
+.form-finopsai .legal-consent-container,
+.form-finopsai .hs-richtext,
+.form-finopsai .submitted-message {
+  display: none !important;
+}
+
+.form-finopsai .input {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.form-finopsai .hs-input,
+.form-finopsai input[type="email"],
+.form-finopsai input[type="text"] {
+  width: 100% !important;
+  max-width: none !important;
+  height: 56px !important;
+  box-sizing: border-box !important;
+  padding: 14px 18px !important;
+  border: 1px solid var(--color-primary) !important;
+  border-radius: var(--radius-input) !important;
+  background: var(--color-input) !important;
+  color: var(--color-text) !important;
+  font-family: inherit !important;
+  font-size: 16px !important;
+  line-height: 1.25 !important;
+  outline: none !important;
+  transition: border-color var(--ease), box-shadow var(--ease), background-color var(--ease);
+}
+
+.form-finopsai .hs-input::placeholder,
+.form-finopsai input::placeholder {
+  color: var(--color-text-secondary) !important;
+}
+
+.form-finopsai .hs-input:focus,
+.form-finopsai .hs-input:focus-visible,
+.form-finopsai input:focus,
+.form-finopsai input:focus-visible {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(23, 165, 251, 0.25) !important;
+  background: var(--color-white) !important;
+}
+
+.form-finopsai .hs-error-msgs {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.form-finopsai .hs-error-msgs label,
+.form-finopsai .hs-error-msg {
+  color: var(--color-error) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+}
+
+.form-finopsai .hs_error .hs-input,
+.form-finopsai .hs-input.error,
+.form-finopsai .invalid.error {
+  border-color: var(--color-error) !important;
+  box-shadow: 0 0 0 3px rgba(253, 31, 31, 0.18) !important;
+}
+
+.form-finopsai .hs-submit,
+.form-finopsai .hs_submit,
+.form-finopsai .actions {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+}
+
+.form-finopsai .hs-button,
+.form-finopsai input[type="submit"],
+.form-finopsai .hs-submit .hs-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-height: 56px !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 14px 40px !important;
+  border: 0 !important;
+  border-radius: var(--radius-btn) !important;
+  background: var(--color-primary) !important;
+  color: var(--color-white) !important;
+  font-family: inherit !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transition: background-color var(--ease), box-shadow var(--ease), opacity var(--ease);
+}
+
+.form-finopsai .hs-button::after,
+.form-finopsai input[type="submit"]::after {
+  content: "";
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  margin-left: 2px;
+  background: url("../assets/icons/arrow-white.svg") center / contain no-repeat;
+  transition: transform var(--ease);
+}
+
+@media (hover: hover) {
+  .form-finopsai .hs-button:hover,
+  .form-finopsai input[type="submit"]:hover {
+    box-shadow: var(--shadow-cta) !important;
+  }
+
+  .form-finopsai .hs-button:hover::after,
+  .form-finopsai input[type="submit"]:hover::after {
+    transform: translateX(3px);
+  }
+}
+
+.form-finopsai .hs-button:active,
+.form-finopsai input[type="submit"]:active {
+  background: var(--color-primary-active) !important;
+}
+
+.form-finopsai .hs-button:focus-visible,
+.form-finopsai input[type="submit"]:focus-visible {
+  outline: 3px solid rgba(23, 165, 251, 0.45) !important;
+  outline-offset: 2px !important;
+}
+
+/* Footer inline HubSpot — keep existing horizontal layout */
+.lead-form-native--inline {
+  gap: 0;
+  width: 100%;
+}
+
+.form-finopsai--inline form,
+.form-finopsai--inline .hs-form,
+.form-finopsai--inline .form-finopsai__hs {
+  flex-direction: row !important;
+  align-items: stretch !important;
+  gap: 12px !important;
+  min-height: 56px;
+}
+
+.form-finopsai--inline fieldset {
+  display: contents !important;
+}
+
+.form-finopsai--inline .hs-form-field {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.form-finopsai--inline .hs-submit,
+.form-finopsai--inline .hs_submit,
+.form-finopsai--inline .actions {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.form-finopsai--inline .hs-input,
+.form-finopsai--inline input[type="email"],
+.form-finopsai--inline input[type="text"] {
+  height: 56px !important;
+  padding: 0 16px !important;
+  border-color: #e2e8f0 !important;
+  background: var(--color-white) !important;
+}
+
+.form-finopsai--inline .hs-button,
+.form-finopsai--inline input[type="submit"],
+.form-finopsai--inline .hs-submit .hs-button {
+  width: auto !important;
+  min-width: 0 !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  padding: 14px 20px !important;
+  box-shadow: 0 8px 11px rgba(23, 165, 251, 0.28) !important;
+}
+
+.form-finopsai--inline .hs-error-msgs {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+}
+
+.form-finopsai--inline .hs-form-field {
+  position: relative;
+}
+
+
 
 .lead-success {
   display: flex;
@@ -724,42 +896,6 @@ p {
 
 .lead-card--inline .lead-success--footer {
   padding-top: 28px;
-}
-
-.lead-form__alert {
-  display: none;
-  width: 100%;
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.4;
-  color: var(--color-error);
-}
-
-.lead-form__alert:not([hidden]) {
-  display: block;
-}
-
-.lead-form--inline {
-  flex-wrap: wrap;
-}
-
-.lead-form--inline .lead-form__alert {
-  order: 10;
-  margin-top: 10px;
-  text-align: left;
-}
-
-.footer-cta .lead-form__alert {
-  color: #ff9b9b;
-}
-
-.footer-cta .field.is-error .field__input {
-  border-color: #ff6b6b;
-  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.22);
-}
-
-.footer-cta .field.is-error .field__error {
-  color: #ff9b9b;
 }
 
 .trust {
@@ -1551,42 +1687,6 @@ p {
   overflow: visible;
 }
 
-.lead-form--inline {
-  flex-direction: row;
-  align-items: stretch;
-  gap: 12px;
-  min-height: 56px;
-  height: auto;
-}
-
-.lead-form--inline .field {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.lead-form--inline .field__input {
-  height: 56px;
-  padding: 0 16px;
-  border-color: #e2e8f0;
-}
-
-.lead-form--inline .field__error {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-}
-
-.lead-form--inline .cta {
-  flex-shrink: 0;
-  height: 56px;
-  min-height: 56px;
-  min-width: 0;
-  padding: 14px 20px;
-}
-
 .footer {
   background: var(--color-white);
   color: var(--color-black);
@@ -1670,39 +1770,6 @@ p {
   font-size: 14.7px;
   font-weight: 500;
   color: #253e66;
-}
-
-/* HubSpot overrides (wired when IDs are provided) */
-
-.hs-mount form.hs-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.hs-mount .hs-input {
-  width: 100% !important;
-  height: 56px;
-  padding: 14px 18px;
-  border: 1px solid var(--color-primary) !important;
-  border-radius: var(--radius-input) !important;
-  background: var(--color-input) !important;
-  font-size: 16px;
-}
-
-.hs-mount .hs-input:focus {
-  box-shadow: 0 0 0 3px rgba(23, 165, 251, 0.25) !important;
-  outline: none;
-}
-
-.hs-mount .hs-button,
-.hs-mount .cta {
-  width: 100%;
-}
-
-.hs-mount .legal-consent-container,
-.hs-mount .hs-richtext {
-  display: none !important;
 }
 
 /* Scroll reveal */
@@ -2039,13 +2106,17 @@ p {
     width: 100%;
   }
 
-  .lead-form--inline {
-    flex-direction: column;
+  .form-finopsai--inline form,
+  .form-finopsai--inline .hs-form,
+  .form-finopsai--inline .form-finopsai__hs {
+    flex-direction: column !important;
     height: auto;
   }
 
-  .lead-form--inline .cta {
-    width: 100%;
+  .form-finopsai--inline .hs-button,
+  .form-finopsai--inline input[type="submit"],
+  .form-finopsai--inline .hs-submit .hs-button {
+    width: 100% !important;
   }
 
   .footer-cta {
@@ -2410,37 +2481,38 @@ p {
     margin: 0;
   }
 
-  .footer-cta .lead-form--inline {
-    gap: 14px;
+  .footer-cta .form-finopsai--inline form,
+  .footer-cta .form-finopsai--inline .hs-form,
+  .footer-cta .form-finopsai--inline .form-finopsai__hs {
+    gap: 14px !important;
     width: 100%;
   }
 
-  .footer-cta .lead-form--inline .field__input {
-    height: 56px;
-    min-height: 56px;
-    padding: 0 18px;
-    border-radius: 12px;
-    font-size: 16px;
+  .footer-cta .form-finopsai--inline .hs-input,
+  .footer-cta .form-finopsai--inline input[type="email"],
+  .footer-cta .form-finopsai--inline input[type="text"] {
+    height: 56px !important;
+    min-height: 56px !important;
+    padding: 0 18px !important;
+    border-radius: 12px !important;
+    font-size: 16px !important;
   }
 
-  .footer-cta .lead-form--inline .field__error {
+  .footer-cta .form-finopsai--inline .hs-error-msgs {
     position: static;
     top: auto;
     margin-top: 6px;
   }
 
-  .footer-cta .lead-form--inline .cta {
-    width: 100%;
-    height: 56px;
-    min-height: 56px;
-    border-radius: 12px;
-    padding: 16px 20px;
-    box-shadow: 0 10px 22px rgba(23, 165, 251, 0.28);
-  }
-
-  .footer-cta .lead-form--inline .lead-form__alert {
-    margin-top: 4px;
-    text-align: center;
+  .footer-cta .form-finopsai--inline .hs-button,
+  .footer-cta .form-finopsai--inline input[type="submit"],
+  .footer-cta .form-finopsai--inline .hs-submit .hs-button {
+    width: 100% !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    border-radius: 12px !important;
+    padding: 16px 20px !important;
+    box-shadow: 0 10px 22px rgba(23, 165, 251, 0.28) !important;
   }
 
   .footer-cta .lead-success--footer {

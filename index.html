@@ -288,55 +288,30 @@
               />
             </svg>
             <div class="lead-card" data-form-card>
-            <canvas class="lead-card__confetti" data-confetti-canvas aria-hidden="true"></canvas>
-            <form class="lead-form" data-lead-form data-form-code="finops_for_ai_demo" novalidate>
-              <input type="hidden" name="unique_code" value="finops_for_ai_demo" />
-              <h2 class="lead-form__title">See What You Could Save on AI Spend</h2>
-              <label class="field">
-                <span class="visually-hidden">Work email</span>
-                <input
-                  class="field__input"
-                  type="email"
-                  name="email"
-                  autocomplete="email"
-                  placeholder="Enter your work email"
-                  required
-                />
-                <span class="field__error" data-error hidden>Enter a valid work email.</span>
-              </label>
-              <button class="cta cta--block" type="submit">
-                <span data-cta-label>Book a Demo</span>
-                <span class="cta__icon" aria-hidden="true">
-                  <img
-                    class="cta__icon-img"
-                    src="assets/icons/arrow-white.svg"
-                    alt=""
-                    width="17"
-                    height="17"
-                  />
-                </span>
-              </button>
-              <p class="lead-form__note">
-                <span class="lead-form__star">*</span>Try FinOps for AI free for 30 days.
-              </p>
-              <p class="lead-form__alert" data-form-error hidden role="alert"></p>
-            </form>
-            <div class="lead-success" data-lead-success hidden role="status" aria-live="polite">
-              <img
-                class="lead-success__icon"
-                src="assets/icons/success-tick.svg"
-                alt=""
-                width="118"
-                height="118"
-              />
-              <div class="lead-success__copy">
-                <h3 class="lead-success__title">Demo Booked!</h3>
-                <p class="lead-success__body">
-                  Thanks for your interest in FinOps for AI.<br />
-                  A confirmation is on its way to your inbox.
+              <canvas class="lead-card__confetti" data-confetti-canvas aria-hidden="true"></canvas>
+              <div class="lead-form-native" data-hs-lead>
+                <h2 class="lead-form__title">See What You Could Save on AI Spend</h2>
+                <div id="form-finopsai" class="form-finopsai"></div>
+                <p class="lead-form__note">
+                  <span class="lead-form__star">*</span>Try FinOps for AI free for 30 days.
                 </p>
               </div>
-            </div>
+              <div class="lead-success" data-lead-success hidden role="status" aria-live="polite">
+                <img
+                  class="lead-success__icon"
+                  src="assets/icons/success-tick.svg"
+                  alt=""
+                  width="118"
+                  height="118"
+                />
+                <div class="lead-success__copy">
+                  <h3 class="lead-success__title">Demo Booked!</h3>
+                  <p class="lead-success__body">
+                    Thanks for your interest in FinOps for AI.<br />
+                    A confirmation is on its way to your inbox.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -904,35 +879,9 @@
         </div>
 
         <div class="footer-cta__form lead-card lead-card--inline" data-form-card>
-          <canvas class="lead-card__confetti" data-confetti-canvas aria-hidden="true"></canvas>
-          <form class="lead-form lead-form--inline" data-lead-form data-form-code="finops_for_ai_demo" novalidate>
-            <input type="hidden" name="unique_code" value="finops_for_ai_demo" />
-            <label class="field">
-              <span class="visually-hidden">Work email</span>
-              <input
-                class="field__input field__input--light"
-                type="email"
-                name="email"
-                autocomplete="email"
-                placeholder="Enter your work email"
-                required
-              />
-              <span class="field__error" data-error hidden>Enter a valid work email.</span>
-            </label>
-            <button class="cta" type="submit">
-              <span data-cta-label>Book a Demo</span>
-              <span class="cta__icon" aria-hidden="true">
-                <img
-                  class="cta__icon-img"
-                  src="assets/icons/arrow-white.svg"
-                  alt=""
-                  width="17"
-                  height="17"
-                />
-              </span>
-            </button>
-            <p class="lead-form__alert" data-form-error hidden role="alert"></p>
-          </form>
+          <div class="lead-form-native lead-form-native--inline" data-hs-lead>
+            <div id="form-finopsai-footer" class="form-finopsai form-finopsai--inline"></div>
+          </div>
           <div class="lead-success lead-success--footer" data-lead-success hidden role="status" aria-live="polite">
             <img
               class="lead-success__icon"
@@ -982,7 +931,7 @@
         </div>
         <nav class="footer__links" aria-label="Legal">
           <a href="https://www.cloudkeeper.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-          <a href="https://www.cloudkeeper.com/responsible-disclosure" target="_blank" rel="noopener noreferrer">Responsible Disclosure</a>
+          <a href="https://wwww.cloudkeeper.com/responsible-disclosure" target="_blank" rel="noopener noreferrer">Responsible Disclosure</a>
         </nav>
         <div class="footer__brand">
           <a href="https://www.cloudkeeper.com/" target="_blank" rel="noopener noreferrer" aria-label="CloudKeeper home">
@@ -992,8 +941,8 @@
         </div>
       </div>
     </footer>
-
+<script charset="utf-8" type="text/javascript" src="https://js.hsforms.net/forms/embed/v2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
-    <script src="js/script.js?v=20260914a" defer></script>
+    <script src="js/script.js?v=20260915h" defer></script>
   </body>
 </html>
