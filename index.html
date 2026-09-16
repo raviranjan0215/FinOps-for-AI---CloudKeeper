@@ -1,9 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NHFQ8VF7N6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-NHFQ8VF7N6");
+      gtag("config", "AW-11144001473");
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>FinOps for AI — CloudKeeper</title>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-KTGV77T");
+    </script>
+    <!-- End Google Tag Manager -->
+    <title>The full stack FinOps for AI | CloudKeeper</title>
     <meta
       name="description"
       content="Optimize AI/LLM spend across models, workloads, and the cloud infrastructure powering them. Try FinOps for AI free for 30 days."
@@ -32,74 +57,9 @@
     <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="icon" href="assets/favicon-16.png" type="image/png" sizes="16x16" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180" />
-
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      (function (w, d, id) {
-        var LOAD_DELAY = 2500;
-        var WAKE_EVENTS = ["pointerdown", "keydown", "wheel", "touchstart", "scroll"];
-        var listenerOpts = { once: true, passive: true, capture: true };
-        var timer = null;
-        var started = false;
-
-        function onVisibilityChange() {
-          if (d.visibilityState === "hidden") {
-            start();
-          }
-        }
-
-        function stopWaiting() {
-          WAKE_EVENTS.forEach(function (name) {
-            w.removeEventListener(name, start, listenerOpts);
-          });
-          d.removeEventListener("visibilitychange", onVisibilityChange);
-          w.removeEventListener("pagehide", start);
-          if (timer !== null) {
-            w.clearTimeout(timer);
-            timer = null;
-          }
-        }
-
-        function start() {
-          if (started) {
-            return;
-          }
-          started = true;
-          stopWaiting();
-          w.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-          var script = d.createElement("script");
-          script.async = true;
-          script.src = "https://www.googletagmanager.com/gtm.js?id=" + id;
-          d.head.appendChild(script);
-        }
-
-        WAKE_EVENTS.forEach(function (name) {
-          w.addEventListener(name, start, listenerOpts);
-        });
-        d.addEventListener("visibilitychange", onVisibilityChange);
-        w.addEventListener("pagehide", start);
-        w.addEventListener(
-          "load",
-          function () {
-            timer = w.setTimeout(start, LOAD_DELAY);
-          },
-          { once: true }
-        );
-      })(window, document, "GTM-KTGV77T");
-    </script>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11144001473"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "AW-11144001473");
-    </script>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
     <noscript
       ><iframe
         src="https://www.googletagmanager.com/ns.html?id=GTM-KTGV77T"
@@ -108,6 +68,7 @@
         style="display: none; visibility: hidden"
       ></iframe
     ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
     <header class="header" id="site-header">
       <div class="header__inner">
