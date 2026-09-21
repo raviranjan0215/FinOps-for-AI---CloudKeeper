@@ -2562,3 +2562,405 @@ p {
   }
 
 }
+
+/* ==========================================================================
+   Report modal — Figma: upload-boll-popup-form (form + success)
+   Padding / spacing from design: header 190 / body 40×50 (form), 30 (success)
+   ========================================================================== */
+
+.report-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.report-modal[hidden] {
+  display: none;
+}
+
+.report-modal.is-open {
+  display: flex;
+}
+
+.report-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 13, 31, 0.58);
+}
+
+.report-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 620px);
+  max-height: min(calc(100vh - 48px), 560px);
+  overflow: auto;
+  border-radius: 16px;
+  background: var(--color-white);
+  box-shadow: 0 24px 64px rgba(5, 13, 31, 0.18);
+}
+
+.report-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.report-modal__close-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+}
+
+.report-modal__close:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.report-modal__header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 190px;
+  overflow: hidden;
+  padding: 24px 48px;
+  text-align: center;
+  background: linear-gradient(153.58deg, #f2f9ff 28.78%, #faf2fe 90.24%);
+}
+
+.report-modal__decor {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+.report-modal__decor--left {
+  width: 120px;
+  height: 120px;
+  top: -48px;
+  left: -38px;
+  background: radial-gradient(circle, rgba(23, 165, 251, 0.35) 0%, rgba(23, 165, 251, 0) 70%);
+}
+
+.report-modal__decor--right {
+  width: 140px;
+  height: 140px;
+  top: 128px;
+  left: 512px;
+  background: radial-gradient(
+    circle,
+    rgba(232, 5, 132, 0.28) 0%,
+    rgba(154, 75, 255, 0.12) 40%,
+    rgba(232, 5, 132, 0) 70%
+  );
+}
+
+.report-modal__header-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  max-width: 524px;
+}
+
+.report-modal__eyebrow {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--color-pink);
+}
+
+.report-modal__title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-black);
+}
+
+.report-modal__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 40px;
+}
+
+.report-modal__view--form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+}
+
+.report-modal__view--success {
+  display: none;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 464px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.report-modal.is-success .report-modal__body {
+  min-height: 174px;
+  padding: 30px;
+  justify-content: center;
+}
+
+.report-modal.is-success .report-modal__view--form {
+  display: none !important;
+}
+
+.report-modal.is-success .report-modal__view--success {
+  display: flex !important;
+}
+
+.report-modal__success-icon {
+  flex-shrink: 0;
+  width: 68px;
+  height: 68px;
+}
+
+.report-modal__success-body {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.2px;
+  color: #111827;
+}
+
+.report-modal__legal {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--color-black);
+}
+
+.report-modal__legal a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.report-modal__hs {
+  width: 100%;
+}
+
+/* HubSpot report form — Figma upload-boll-popup-form (email + CTA row) */
+.report-modal__hs form,
+.report-modal__hs .report-modal__hs-form,
+#form-report-modal form {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.report-modal__hs fieldset,
+#form-report-modal fieldset {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.report-modal__hs .hs-form-field,
+#form-report-modal .hs-form-field {
+  flex: 1 1 240px !important;
+  margin: 0 !important;
+  float: none !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+.report-modal__hs .hs-form-field > label,
+.report-modal__hs .hs-field-desc,
+.report-modal__hs .legal-consent-container,
+.report-modal__hs .hs-richtext,
+.report-modal__hs .submitted-message,
+#form-report-modal .hs-form-field > label,
+#form-report-modal .hs-field-desc,
+#form-report-modal .legal-consent-container,
+#form-report-modal .hs-richtext,
+#form-report-modal .submitted-message {
+  display: none !important;
+}
+
+.report-modal__hs .input,
+#form-report-modal .input {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.report-modal__hs .hs-input,
+.report-modal__hs input[type="email"],
+.report-modal__hs input[type="text"],
+#form-report-modal .hs-input,
+#form-report-modal input[type="email"],
+#form-report-modal input[type="text"] {
+  width: 100% !important;
+  max-width: none !important;
+  height: 56px !important;
+  padding: 14px 18px !important;
+  border: 1px solid var(--color-primary) !important;
+  border-radius: 8px !important;
+  background: #f2f8fc !important;
+  font-family: inherit !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 1.2 !important;
+  color: var(--color-text) !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+.report-modal__hs .hs-input::placeholder,
+#form-report-modal .hs-input::placeholder {
+  color: #828282 !important;
+  opacity: 1 !important;
+}
+
+.report-modal__hs .hs-input:focus,
+.report-modal__hs .hs-input:focus-visible,
+#form-report-modal .hs-input:focus,
+#form-report-modal .hs-input:focus-visible {
+  outline: none !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(23, 165, 251, 0.18) !important;
+}
+
+.report-modal__hs .hs-submit,
+#form-report-modal .hs-submit {
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  float: none !important;
+  width: auto !important;
+}
+
+.report-modal__hs .actions,
+#form-report-modal .actions {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.report-modal__hs .hs-button,
+.report-modal__hs input[type="submit"],
+#form-report-modal .hs-button,
+#form-report-modal input[type="submit"] {
+  width: auto !important;
+  min-width: 140px !important;
+  height: 56px !important;
+  padding: 14px 20px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: var(--color-primary) !important;
+  color: var(--color-white) !important;
+  font-family: inherit !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+@media (hover: hover) {
+  .report-modal__hs .hs-button:hover,
+  .report-modal__hs input[type="submit"]:hover,
+  #form-report-modal .hs-button:hover,
+  #form-report-modal input[type="submit"]:hover {
+    background: var(--color-primary-hover) !important;
+  }
+}
+
+.report-modal__hs .hs-error-msgs,
+#form-report-modal .hs-error-msgs {
+  margin: 6px 0 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.report-modal__hs .hs-error-msgs label,
+#form-report-modal .hs-error-msgs label {
+  display: block !important;
+  color: var(--color-error) !important;
+  font-size: 12px !important;
+}
+
+body.report-modal-open {
+  overflow: hidden;
+}
+
+@media (max-width: 599px) {
+  .report-modal__header {
+    min-height: 150px;
+    padding: 28px 24px 20px;
+  }
+
+  .report-modal__title {
+    font-size: 22px;
+  }
+
+  .report-modal__eyebrow {
+    font-size: 16px;
+  }
+
+  .report-modal__body {
+    padding: 28px 20px 32px;
+  }
+
+  .report-modal__hs form,
+  .report-modal__hs .report-modal__hs-form,
+  #form-report-modal form {
+    flex-direction: column !important;
+  }
+
+  .report-modal__hs .hs-form-field,
+  #form-report-modal .hs-form-field,
+  .report-modal__hs .hs-submit,
+  #form-report-modal .hs-submit,
+  .report-modal__hs .hs-button,
+  .report-modal__hs input[type="submit"],
+  #form-report-modal .hs-button,
+  #form-report-modal input[type="submit"] {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+  }
+
+  .report-modal.is-success .report-modal__view--success {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+}

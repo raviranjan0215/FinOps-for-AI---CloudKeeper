@@ -231,3 +231,60 @@
     }
   })();
 })();
+
+/* Report modal — Figma upload-boll-popup-form open / close / reset */
+(function () {
+  var modal = document.getElementById("report-modal");
+  if (!modal) return;
+
+  var lastFocus = null;
+
+  function resetReportModal() {
+    modal.classList.remove("is-success");
+    var formView = modal.querySelector('[data-report-view="form"]');
+    var successView = modal.querySelector('[data-report-view="success"]');
+    if (formView) formView.setAttribute("aria-hidden", "false");
+    if (successView) successView.setAttribute("aria-hidden", "true");
+  }
+
+  function openReportModal() {
+    lastFocus = document.activeElement;
+    resetReportModal();
+    modal.hidden = false;
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("report-modal-open");
+    var closeBtn = modal.querySelector(".report-modal__close");
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeReportModal() {
+    modal.classList.remove("is-open");
+    modal.hidden = true;
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("report-modal-open");
+    resetReportModal();
+    if (lastFocus && typeof lastFocus.focus === "function") {
+      lastFocus.focus();
+    }
+  }
+
+  document.querySelectorAll("[data-open-report-modal]").forEach(function (trigger) {
+    trigger.addEventListener("click", function (event) {
+      event.preventDefault();
+      openReportModal();
+    });
+  });
+
+  modal.querySelectorAll("[data-report-close]").forEach(function (el) {
+    el.addEventListener("click", function () {
+      closeReportModal();
+    });
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && modal.classList.contains("is-open")) {
+      closeReportModal();
+    }
+  });
+})();

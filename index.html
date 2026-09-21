@@ -647,6 +647,45 @@
           </header>
 
           <ul class="resource-list">
+            <!-- DEV: AI Cost Analysis Report card — opens #report-modal (Figma: upload-boll-popup-form). Do not remove. -->
+            <li class="resource-card reveal">
+              <div class="resource-card__thumb">
+                <img
+                  src="assets/images/report-thumb.webp"
+                  alt=""
+                  width="216"
+                  height="128"
+                />
+              </div>
+              <div class="resource-card__copy">
+                <h3>Get a Free AI Cost Analysis Report</h3>
+                <p>
+                  Analyze your AI environment across key cost and efficiency dimensions to uncover
+                  potential savings.
+                </p>
+              </div>
+              <a class="cta cta--ghost" href="#report-modal" data-open-report-modal>
+                Get the Report
+                <span class="cta__icon" aria-hidden="true">
+                  <img
+                    class="cta__icon-img cta__icon-img--default"
+                    src="assets/icons/arrow-blue.svg"
+                    alt=""
+                    width="17"
+                    height="17"
+                  />
+                  <img
+                    class="cta__icon-img cta__icon-img--hover"
+                    src="assets/icons/arrow-white.svg"
+                    alt=""
+                    width="17"
+                    height="17"
+                  />
+                </span>
+              </a>
+            </li>
+            <!-- /DEV: AI Cost Analysis Report card -->
+
             <li class="resource-card reveal">
               <div class="resource-card__thumb">
                 <img
@@ -901,6 +940,96 @@
         </div>
       </div>
     </footer>
+
+    <!--
+      =====================================================================
+      DEV UPLOAD NOTE — AI Cost Analysis Report modal
+      Figma component: upload-boll-popup-form (form + success states)
+      HubSpot: portal 47057450 / form a6b8fd7b-c8a3-447c-a914-8fc32cf6e2ab / na1
+      - No PDF / upload-bill field (removed in HubSpot form)
+      - Keep form view + thanks view in the same popup (in-place swap)
+      - Close: X, backdrop, Escape
+      Related CSS: .report-modal* in css/style.css
+      Related JS: report modal block in js/script.js + hbspt create below
+      =====================================================================
+    -->
+    <div
+      class="report-modal"
+      id="report-modal"
+      hidden
+      aria-hidden="true"
+    >
+      <div class="report-modal__backdrop" data-report-close tabindex="-1"></div>
+      <div
+        class="report-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="report-modal-title"
+      >
+        <button
+          class="report-modal__close"
+          type="button"
+          data-report-close
+          aria-label="Close"
+        >
+          <img
+            class="report-modal__close-icon"
+            src="assets/icons/close-blue.svg"
+            alt=""
+            width="24"
+            height="24"
+          />
+        </button>
+
+        <div class="report-modal__header">
+          <span class="report-modal__decor report-modal__decor--left" aria-hidden="true"></span>
+          <span class="report-modal__decor report-modal__decor--right" aria-hidden="true"></span>
+          <div class="report-modal__header-content">
+            <p class="report-modal__eyebrow">Benchmark your AI Environment</p>
+            <h2 class="report-modal__title" id="report-modal-title">
+              Get a Free AI Cost Analysis Report
+            </h2>
+          </div>
+        </div>
+
+        <div class="report-modal__body">
+          <!-- DEV: HubSpot mounts into #form-report-modal (email only — no bill upload). -->
+          <div class="report-modal__view report-modal__view--form" data-report-view="form">
+            <div id="form-report-modal" class="report-modal__hs"></div>
+            <p class="report-modal__legal">
+              By submitting this form, you acknowledge that you have read and agree to
+              <a
+                href="https://www.cloudkeeper.com/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                >CloudKeeper Privacy Policy</a
+              >.
+            </p>
+          </div>
+
+          <div
+            class="report-modal__view report-modal__view--success"
+            data-report-view="success"
+            role="status"
+            aria-live="polite"
+            aria-hidden="true"
+          >
+            <img
+              class="report-modal__success-icon"
+              src="assets/icons/success-tick.svg"
+              alt=""
+              width="68"
+              height="68"
+            />
+            <p class="report-modal__success-body">
+              Thanks for your interest. A confirmation email is on its way to your inbox.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /DEV UPLOAD NOTE — AI Cost Analysis Report modal -->
+
 <script charset="utf-8" type="text/javascript" src="https://js.hsforms.net/forms/embed/v2.js"></script>
     <script>
       (function () {
@@ -936,6 +1065,16 @@
           showSuccess(target && target.closest("[data-form-card]"));
         }
 
+        function showReportSuccess() {
+          var modal = document.getElementById("report-modal");
+          if (!modal) return;
+          modal.classList.add("is-success");
+          var success = modal.querySelector('[data-report-view="success"]');
+          var formView = modal.querySelector('[data-report-view="form"]');
+          if (formView) formView.setAttribute("aria-hidden", "true");
+          if (success) success.setAttribute("aria-hidden", "false");
+        }
+
         hbspt.forms.create({
           portalId: "47057450",
           formId: "9c9163c2-6f41-4369-bac9-8f4668c93889",
@@ -961,10 +1100,24 @@
             onSubmitted("#form-finopsai-footer");
           },
         });
+
+        /* DEV: Report popup HubSpot form (a6b8fd7b…) — no upload-bill field */
+        hbspt.forms.create({
+          portalId: "47057450",
+          formId: "a6b8fd7b-c8a3-447c-a914-8fc32cf6e2ab",
+          region: "na1",
+          target: "#form-report-modal",
+          formInstanceId: "3",
+          css: "",
+          cssClass: "report-modal__hs-form",
+          onFormSubmitted: function () {
+            showReportSuccess();
+          },
+        });
       })();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
-    <script src="js/script.js?v=20260915i" defer></script>
+    <script src="js/script.js?v=20260921a" defer></script>
 
     <!-- Start of HubSpot Embed Code -->
     <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/47057450.js"></script>
