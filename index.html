@@ -48,7 +48,7 @@
       imagesizes="100vw"
       fetchpriority="high"
     />
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.css?v=20260923b" />
 
     <link rel="preconnect" href="https://js.hsforms.net" crossorigin />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
@@ -996,15 +996,24 @@
           <!-- DEV: HubSpot mounts into #form-report-modal (email only — no bill upload). -->
           <div class="report-modal__view report-modal__view--form" data-report-view="form">
             <div id="form-report-modal" class="report-modal__hs"></div>
-            <p class="report-modal__legal">
-              By submitting this form, you acknowledge that you have read and agree to
-              <a
-                href="https://www.cloudkeeper.com/privacy-policy"
-                target="_blank"
-                rel="noopener noreferrer"
-                >CloudKeeper Privacy Policy</a
-              >.
-            </p>
+            <div class="report-modal__foot">
+              <div class="report-modal__note" role="note">
+                <span class="report-modal__note-icon" aria-hidden="true">i</span>
+                <p class="report-modal__note-text">
+                  Note: Your CUR will be required to generate a personalized &amp; accurate
+                  analysis.
+                </p>
+              </div>
+              <p class="report-modal__legal">
+                By submitting this form, you acknowledge that you have read and agree to
+                <a
+                  href="https://www.cloudkeeper.com/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >CloudKeeper Privacy Policy</a
+                >.
+              </p>
+            </div>
           </div>
 
           <div
@@ -1068,6 +1077,8 @@
         function showReportSuccess() {
           var modal = document.getElementById("report-modal");
           if (!modal) return;
+          /* Persist until refresh — HubSpot already replaced the embed; reopen must stay on success. */
+          modal.setAttribute("data-submitted", "true");
           modal.classList.add("is-success");
           var success = modal.querySelector('[data-report-view="success"]');
           var formView = modal.querySelector('[data-report-view="form"]');
@@ -1117,7 +1128,7 @@
       })();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
-    <script src="js/script.js?v=20260921a" defer></script>
+    <script src="js/script.js?v=20260923c" defer></script>
 
     <!-- Start of HubSpot Embed Code -->
     <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/47057450.js"></script>

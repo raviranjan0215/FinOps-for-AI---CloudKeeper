@@ -655,6 +655,11 @@ p {
   background: var(--color-white) !important;
 }
 
+/* HubSpot injects field error + form rollup; keep field-level only */
+.form-finopsai .hs_error_rollup {
+  display: none !important;
+}
+
 .form-finopsai .hs-error-msgs {
   list-style: none;
   margin: 8px 0 0;
@@ -2565,7 +2570,8 @@ p {
 
 /* ==========================================================================
    Report modal — Figma: upload-boll-popup-form (form + success)
-   Padding / spacing from design: header 190 / body 40×50 (form), 30 (success)
+   Padding / spacing: header 190 / body 40×50 (form), 30 (success)
+   Form body ~258px; success body matches (~257px) so modal height stays aligned
    ========================================================================== */
 
 .report-modal {
@@ -2713,6 +2719,49 @@ p {
   width: 100%;
 }
 
+.report-modal__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.report-modal__note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: #f1f9fe;
+  overflow: hidden;
+}
+
+.report-modal__note-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.report-modal__note-text {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #111827;
+}
+
 .report-modal__view--success {
   display: none;
   align-items: center;
@@ -2724,7 +2773,7 @@ p {
 }
 
 .report-modal.is-success .report-modal__body {
-  min-height: 174px;
+  min-height: 258px;
   padding: 30px;
   justify-content: center;
 }
@@ -2754,8 +2803,10 @@ p {
 
 .report-modal__legal {
   margin: 0;
-  font-size: 11px;
-  line-height: 1.4;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.12px;
   text-align: center;
   color: var(--color-black);
 }
@@ -2902,6 +2953,12 @@ p {
   #form-report-modal input[type="submit"]:hover {
     background: var(--color-primary-hover) !important;
   }
+}
+
+/* HubSpot injects field error + form rollup; keep field-level only */
+.report-modal__hs .hs_error_rollup,
+#form-report-modal .hs_error_rollup {
+  display: none !important;
 }
 
 .report-modal__hs .hs-error-msgs,

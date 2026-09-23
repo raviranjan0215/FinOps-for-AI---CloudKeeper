@@ -239,17 +239,25 @@
 
   var lastFocus = null;
 
-  function resetReportModal() {
-    modal.classList.remove("is-success");
+  /* After HubSpot submit, keep success until page refresh (form is already consumed). */
+  function applyReportModalView() {
+    var submitted = modal.getAttribute("data-submitted") === "true";
     var formView = modal.querySelector('[data-report-view="form"]');
     var successView = modal.querySelector('[data-report-view="success"]');
+    if (submitted) {
+      modal.classList.add("is-success");
+      if (formView) formView.setAttribute("aria-hidden", "true");
+      if (successView) successView.setAttribute("aria-hidden", "false");
+      return;
+    }
+    modal.classList.remove("is-success");
     if (formView) formView.setAttribute("aria-hidden", "false");
     if (successView) successView.setAttribute("aria-hidden", "true");
   }
 
   function openReportModal() {
     lastFocus = document.activeElement;
-    resetReportModal();
+    applyReportModalView();
     modal.hidden = false;
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
@@ -263,7 +271,7 @@
     modal.hidden = true;
     modal.setAttribute("aria-hidden", "true");
     document.body.classList.remove("report-modal-open");
-    resetReportModal();
+    applyReportModalView();
     if (lastFocus && typeof lastFocus.focus === "function") {
       lastFocus.focus();
     }
