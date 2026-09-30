@@ -48,7 +48,7 @@
       imagesizes="100vw"
       fetchpriority="high"
     />
-    <link rel="stylesheet" href="css/style.css?v=20260930c" />
+    <link rel="stylesheet" href="css/style.css?v=20260930d" />
 
     <link rel="preconnect" href="https://js.hsforms.net" crossorigin />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
@@ -277,43 +277,68 @@
           <div class="trust__border" aria-hidden="true"></div>
           <ul class="trust__row">
             <li class="trust__item trust__item--g2">
-              <img
-                src="assets/logos/trust-g2.webp"
-                alt="G2 — 4.8 out of 5 stars, 500+ happy customers"
-                width="208"
-                height="60"
-              />
+              <div
+                class="trust-g2"
+                role="img"
+                aria-label="G2 — 4.8 out of 5 stars, 500+ happy customers"
+              >
+                <img
+                  class="trust-g2__mark"
+                  src="assets/logos/trust-g2-mark.svg"
+                  alt=""
+                  width="52"
+                  height="52"
+                  decoding="async"
+                />
+                <div class="trust-g2__copy">
+                  <div class="trust-g2__rating">
+                    <img
+                      class="trust-g2__stars"
+                      src="assets/logos/trust-g2-stars.svg"
+                      alt=""
+                      width="88"
+                      height="16"
+                      decoding="async"
+                    />
+                    <span class="trust-g2__score">4.8</span>
+                  </div>
+                  <p class="trust-g2__customers">500+ happy customers</p>
+                </div>
+              </div>
             </li>
             <li class="trust__item trust__item--gartner">
               <img
-                src="assets/logos/trust-gartner.webp"
+                src="assets/logos/trust-gartner.png"
                 alt="Gartner Peer Insights"
                 width="127"
                 height="65"
+                decoding="async"
               />
             </li>
             <li class="trust__item trust__item--aws">
               <img
-                src="assets/logos/trust-aws.webp"
-                alt="AWS Partner — AI Services Competency"
-                width="75"
-                height="60"
+                src="assets/logos/trust-aws.svg?v=20260930d"
+                alt="AWS Partner — Premier Tier Services"
+                width="76"
+                height="61"
               />
             </li>
             <li class="trust__item trust__item--gcp">
               <img
-                src="assets/logos/trust-gcp.webp"
+                src="assets/logos/trust-gcp.png"
                 alt="Google Cloud Partner"
                 width="132"
                 height="65"
+                decoding="async"
               />
             </li>
             <li class="trust__item trust__item--microsoft">
               <img
-                src="assets/logos/trust-microsoft.webp"
+                src="assets/logos/trust-microsoft.svg"
                 alt="Microsoft Solutions Partner"
                 width="134"
                 height="62"
+                decoding="async"
               />
             </li>
           </ul>
@@ -328,7 +353,7 @@
               <span class="gradient-text">we meet you there</span>
             </h2>
             <a class="cta" href="#hero" data-scroll data-focus-form>
-              Get a 30-day free trial
+              Get Started
               <span class="cta__icon" aria-hidden="true">
                 <img
                   class="cta__icon-img"
